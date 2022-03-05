@@ -1,4 +1,4 @@
-import "./style.css"
+import "./style.css";
 
 import * as THREE from "three";
 import { Color } from "three";
@@ -10,23 +10,28 @@ function main() {
   canvas.addEventListener("mouseleave", () => {
     mouseMove = null;
   });
-  canvas.addEventListener("mousemove", ({ movementX, movementY }) => {
-    mouseMove = { x: movementX, y: movementY };
+  canvas.addEventListener("mousemove", ({ offsetX, offsetY }) => {
+    mouseMove = { x: offsetX, y: offsetY };
   });
-  const renderer = new THREE.WebGLRenderer({ canvas });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
 
   //renderer.shadowMap.enabled = true;
 
   const fov = 75;
   const aspect = 2; // the canvas default
   const near = 0.1;
-  const far = 5;
+  const far = 150;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+  const cameraRig = new THREE.Group();
+  cameraRig.add(camera);
 
   camera.position.z = 2;
 
   const scene = new THREE.Scene();
-  scene.background = new Color(0x666666);
+  scene.background = new Color(0x000000);
+
+  scene.add(cameraRig);
 
   const light = new THREE.DirectionalLight(0xffffff);
   //light.castShadow = true;
@@ -34,9 +39,12 @@ function main() {
   //light.shadow.mapSize.x = 1024;
   //light.shadow.mapSize.y = 1024;
 
-  light.position.x = 1;
+  light.position.x = 0;
   light.position.z = 1;
-  light.position.y = 0.3;
+  light.position.y = 1;
+
+  light.intensity = 3;
+  light.color.set("#7A8E9B");
 
   scene.add(light);
 
@@ -47,15 +55,18 @@ function main() {
   });*/
 
   const plane = new THREE.Mesh(
-    new THREE.PlaneGeometry(10, 10),
-    new THREE.MeshStandardMaterial({ color: 0xffffff })
+    new THREE.PlaneGeometry(375, 200),
+    new THREE.MeshStandardMaterial({
+      map: new THREE.TextureLoader().load("img/background.jpg"),
+      side: c.DoubleSide,
+    })
   );
 
   //plane.receiveShadow = true;
 
-  plane.position.z = -1;
+  plane.position.z = -90;
 
-  //scene.add(plane);
+  scene.add(plane);
 
   const helper = new THREE.CameraHelper(light.shadow.camera);
 
@@ -66,7 +77,7 @@ function main() {
   const boxDepth = 0.2024465;
   const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
-  const material = new THREE.MeshStandardMaterial({ color: 0xff2222 });
+  const material = new THREE.MeshStandardMaterial({ color: 0x131622 });
   new THREE.MeshStandardMaterial();
 
   const short = new THREE.Mesh(geometry, material);
@@ -103,6 +114,11 @@ function main() {
     return needResize;
   }
 
+  /*
+  const backgroundTexture = new THREE.TextureLoader().load('img/background.jpg');
+  scene.background = backgroundTexture;
+  */
+
   function render(time) {
     time *= 0.001;
 
@@ -122,13 +138,43 @@ function main() {
     //cube.rotation.z += 0.001;
 
     //short.rotation.x += 0.01;
-    console.log(mouseMove);
+    //console.log(mouseMove);
+
+    /*
     logo.rotation.y += mouseMove
       ? mouseMove.x
         ? mouseMove.x * 0.01
         : 0
       : 0.01;
     mouseMove = mouseMove ? { ...mouseMove, x: 0 } : null;
+    
+
+    logo.rotation.y = mouseMove
+      ? mouseMove.x
+        ?mouseMove.x * 0.01
+        : 0
+      : 0
+    mouseMove = mouseMove ? { ...mouseMove, x:0 } : null;
+    */
+
+    if (mouseMove) {
+      if (mouseMove.x) {
+        logo.rotation.y = (mouseMove.x - canvas.clientWidth * 0.5) * 0.0005;
+
+        //plane.position.x = (mouseMove.x - canvas.clientWidth * 0.5) * -0.005;
+        //plane.rotation.y = (mouseMove.x - canvas.clientWidth * 0.5) * 0.00005;
+        cameraRig.rotation.y =
+          (mouseMove.x - canvas.clientWidth * 0.5) * 0.00005;
+      }
+
+      if (mouseMove.y) {
+        logo.rotation.x = (mouseMove.y - canvas.clientHeight * 0.5) * 0.0005;
+        //plane.position.y = (mouseMove.y - canvas.clientHeight * 0.5) * -0.005;
+        //plane.rotation.x = (mouseMove.y - canvas.clientHeight * 0.5) * 0.00005;
+        cameraRig.rotation.x =
+          (mouseMove.y - canvas.clientHeight * 0.5) * 0.00005;
+      }
+    }
 
     renderer.render(scene, camera);
 
