@@ -1,5 +1,7 @@
 import "./style.css";
 
+import bg from "./img/background.jpg"
+
 import * as THREE from "three";
 import { Color } from "three";
 //import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
@@ -57,7 +59,7 @@ function main() {
   const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(375, 200),
     new THREE.MeshStandardMaterial({
-      map: new THREE.TextureLoader().load("img/background.jpg"),
+      map: new THREE.TextureLoader().load(bg),
       side: c.DoubleSide,
     })
   );
