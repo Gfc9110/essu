@@ -4,6 +4,13 @@ import { Color } from "three";
 
 function main() {
   const canvas = document.querySelector("#c");
+  let mouseMove = null;
+  canvas.addEventListener("mouseleave", () => {
+    mouseMove = null;
+  });
+  canvas.addEventListener("mousemove", ({ movementX, movementY }) => {
+    mouseMove = { x: movementX, y: movementY };
+  });
   const renderer = new THREE.WebGLRenderer({ canvas });
 
   //renderer.shadowMap.enabled = true;
@@ -17,7 +24,7 @@ function main() {
   camera.position.z = 2;
 
   const scene = new THREE.Scene();
-  scene.background = new Color(0x222222);
+  scene.background = new Color(0x666666);
 
   const light = new THREE.DirectionalLight(0xffffff);
   //light.castShadow = true;
@@ -46,7 +53,7 @@ function main() {
 
   plane.position.z = -1;
 
-  scene.add(plane);
+  //scene.add(plane);
 
   const helper = new THREE.CameraHelper(light.shadow.camera);
 
@@ -113,7 +120,13 @@ function main() {
     //cube.rotation.z += 0.001;
 
     //short.rotation.x += 0.01;
-    logo.rotation.y += 0.01;
+    console.log(mouseMove);
+    logo.rotation.y += mouseMove
+      ? mouseMove.x
+        ? mouseMove.x * 0.01
+        : 0
+      : 0.01;
+    mouseMove = mouseMove ? { ...mouseMove, x: 0 } : null;
 
     renderer.render(scene, camera);
 
