@@ -1,3 +1,5 @@
+import "./style.css"
+
 import * as THREE from "three";
 import { Color } from "three";
 //import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
