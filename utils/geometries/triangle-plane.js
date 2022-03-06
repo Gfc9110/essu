@@ -18,13 +18,13 @@ export default function (vertexSpacing, sizeX, sizeY, sampler = () => 0) {
     for (let y = 0; y <= sizeY; y++) {
       vertices.push(x * vertexSpacing, y * vertexSpacing, sampler({ x, y }));
       if (x > 0 && y > 0) {
-        indices.push((x - 1) * sizeY + (y - 1));
-        indices.push(x * sizeY + (y - 1));
-        indices.push((x - 1) * sizeY + y);
+        indices.push((x - 1) * (sizeY + 1) + (y - 1));
+        indices.push(x * (sizeY + 1) + (y - 1));
+        indices.push((x - 1) * (sizeY + 1) + y);
 
-        indices.push(x * sizeY + (y - 1));
-        indices.push(x * sizeY + y);
-        indices.push((x - 1) * sizeY + y);
+        indices.push(x * (sizeY + 1) + (y - 1));
+        indices.push(x * (sizeY + 1) + y);
+        indices.push((x - 1) * (sizeY + 1) + y);
       }
     }
   }
