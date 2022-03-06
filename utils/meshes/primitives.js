@@ -1,20 +1,35 @@
 import * as THREE from "three";
-import { SphereGeometry } from "three";
+import {
+  SphereGeometry,
+  BoxGeometry,
+  MeshStandardMaterial,
+  Mesh,
+  Vector3,
+} from "three";
 
 /**
  *
- * @param {THREE.Vector3} center
- * @param {THREE.Vector3} size
+ * @param {Vector3} center
+ * @param {Vector3} size
  * @param {THREE.ColorRepresentation} color
  */
 export function generateBox(center, size, color) {
-  const geometry = new THREE.BoxGeometry(size.x, size.y, size.z);
-  const material = new THREE.MeshStandardMaterial({ color });
-  const mesh = new THREE.Mesh(geometry, material);
+  const geometry = new BoxGeometry(size.x, size.y, size.z);
+  const material = new MeshStandardMaterial({ color });
+  const mesh = new Mesh(geometry, material);
   mesh.position.set(center.x, center.y, center.z);
   return mesh;
 }
 
+/**
+ *
+ * @param {Number} center
+ * @param {Number} radius
+ * @param {ColorRepresentation} color
+ * @param {Number} wSegments
+ * @param {Number} hSegments
+ * @returns
+ */
 export function generateSphere(
   center,
   radius,
@@ -23,8 +38,8 @@ export function generateSphere(
   hSegments = 16
 ) {
   const geometry = new SphereGeometry(radius, wSegments, hSegments);
-  const material = new THREE.MeshStandardMaterial({ color });
-  const mesh = new THREE.Mesh(geometry, material);
+  const material = new MeshStandardMaterial({ color });
+  const mesh = new Mesh(geometry, material);
   mesh.position.set(center.x, center.y, center.z);
   return mesh;
 }

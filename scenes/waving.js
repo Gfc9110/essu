@@ -64,13 +64,14 @@ export default async (renderer) => {
   pointLight.position.z = 20;
   scene.add(pointLight);
 
-  scene.add(generateSphere(new Vector3(0, 0, 10), 5, "white"));
+  scene.add(generateSphere(new Vector3(0, 0, 150), 50, "white"));
 
   const canvas = renderer.domElement;
   const camera = new OrthographicCamera();
   const cameraRig = new Group();
   cameraRig.name = "CameraRig";
   cameraRig.add(camera);
+  cameraRig.position.z = 50;
   camera.zoom = 0.5;
   camera.near = 200;
   camera.far = 1800;
