@@ -10,14 +10,14 @@ import {
   Vector3,
 } from "three";
 import arrayGrid from "../utils/arrayGrid";
-import { generateBox } from "../utils/meshes/primitives";
+import { generateBox, generateSphere } from "../utils/meshes/primitives";
 import mouseGen from "../utils/mouse";
 import fixCameraAspect from "../utils/responsiveOrthographic";
 
 export default async function (renderer) {
   const canvas = renderer.domElement;
   const scene = new Scene();
-  const mouse = mouseGen();
+  const mouse = mouseGen(renderer);
   scene.background = new Color("white");
   const camera = new OrthographicCamera();
   camera.zoom = 0.7;
@@ -31,6 +31,10 @@ export default async function (renderer) {
   light.position.z = 10;
   light.distance = 150;
   scene.add(light);
+  const lightSphere = generateSphere(new Vector3(0, 0, 0), 6, "white");
+  light.add(lightSphere);
+  lightSphere.position.z = 20;
+  lightSphere.position.y = 20;
 
   const baseCube = generateBox(
     new Vector3(0, 0, -45),
@@ -72,10 +76,10 @@ export default async function (renderer) {
     //cameraCenter.rotation.z += delta * 0.0001;
     const reachX =
       (mouse.position.x / canvas.clientWidth - 0.5) *
-      200 *
+      150 *
       (canvas.clientWidth / canvas.clientHeight);
 
-    const reachY = -(mouse.position.y / canvas.clientHeight - 0.5) * 200;
+    const reachY = -(mouse.position.y / canvas.clientHeight - 0.5) * 150;
     light.position.x += (reachX - light.position.x) * 0.002;
     light.position.y += (reachY - light.position.y) * 0.002;
     /*light.position.x =

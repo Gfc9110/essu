@@ -14,8 +14,8 @@ import {
 import arrayGrid from "../utils/arrayGrid.js";
 
 export default async (renderer) => {
-  document.title = "DRS | Ortho Cubes"
-  const mouse = mouseGenerator();
+  document.title = "DRS | Ortho Cubes";
+  const mouse = mouseGenerator(renderer);
   const scene = new Scene();
 
   scene.background = new Color("#ffd");
