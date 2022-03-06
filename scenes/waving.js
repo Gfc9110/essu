@@ -64,7 +64,7 @@ export default async (renderer) => {
   pointLight.position.z = 20;
   scene.add(pointLight);
 
-  scene.add(generateSphere(new Vector3(0, 0, 150), 50, "white"));
+  scene.add(generateSphere(new Vector3(0, 0, 150), 50, "#824"));
 
   const canvas = renderer.domElement;
   const camera = new OrthographicCamera();

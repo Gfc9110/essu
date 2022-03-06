@@ -7,7 +7,13 @@ import { BufferAttribute, BufferGeometry } from "three";
  * @param {Number} sizeY
  * @returns {BufferGeometry}
  */
-export default function (vertexSpacing, sizeX, sizeY, sampler = () => 0) {
+export default function (
+  vertexSpacing,
+  sizeX,
+  sizeY,
+  sampler = () => 0,
+  verticalSpacing = null
+) {
   const geometry = new BufferGeometry();
 
   const indices = [];
@@ -16,7 +22,11 @@ export default function (vertexSpacing, sizeX, sizeY, sampler = () => 0) {
 
   for (let x = 0; x <= sizeX; x++) {
     for (let y = 0; y <= sizeY; y++) {
-      vertices.push(x * vertexSpacing, y * vertexSpacing, sampler({ x, y }));
+      vertices.push(
+        x * vertexSpacing,
+        y * (verticalSpacing || vertexSpacing),
+        sampler({ x, y })
+      );
       if (x > 0 && y > 0) {
         indices.push((x - 1) * (sizeY + 1) + (y - 1));
         indices.push(x * (sizeY + 1) + (y - 1));
