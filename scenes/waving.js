@@ -32,7 +32,7 @@ function terrainSample(p, noiseScale = 1) {
 
 export default async (renderer) => {
   document.title = "DRS | Waving";
-  const mouse = mouseGenerator();
+  const mouse = mouseGenerator(renderer);
   const scene = new Scene();
 
   scene.background = new Color("#222");
