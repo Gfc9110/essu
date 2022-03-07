@@ -7,15 +7,93 @@ export default function (renderer) {
     position: new Vector2(0, 0),
     movement: new Vector2(0, 0),
     down: false,
+    dragging: false,
   };
-  const hammer = new Hammer(renderer.domElement);
-  hammer.on("pan", (event) => {
-    if (event.srcEvent.pointerId == 1) {
-      touch.position.x = event.center.x;
-      touch.position.y = event.center.y;
-      touch.movement.x = event.deltaX;
-      touch.movement.y = event.deltaY;
+  let touchMoveTimeout;
+  let downHandler = (event) => {
+    event.preventDefault();
+    if (event.changedTouches) {
+      const firstTouch = Array.from(event.changedTouches).find(
+        (t) => t.identifier == 0
+      );
+      if (firstTouch) {
+        touch.down = true;
+        touch.position.x = firstTouch.clientX;
+        touch.position.y = firstTouch.clientY;
+        touch.movement.x = 0;
+        touch.movement.y = 0;
+      }
+    } else {
+      if (event.button === 0) {
+        touch.down = true;
+        touch.position.x = event.clientX;
+        touch.position.y = event.clientY;
+        touch.movement.x = 0;
+        touch.movement.y = 0;
+      }
     }
-  });
+  };
+  let moveHandler = (event) => {
+    event.preventDefault();
+    if (event.changedTouches) {
+      const firstTouch = Array.from(event.changedTouches).find(
+        (t) => t.identifier == 0
+      );
+      if (firstTouch) {
+        touch.movement.x = firstTouch.clientX - touch.position.x;
+        touch.movement.y = firstTouch.clientY - touch.position.y;
+        touch.position.x = firstTouch.clientX;
+        touch.position.y = firstTouch.clientY;
+        touch.dragging = true;
+      } else {
+        touch.movement.x = 0;
+        touch.movement.y = 0;
+        touch.dragging = false;
+      }
+      clearTimeout(touchMoveTimeout);
+      touchMoveTimeout = setTimeout(() => {
+        touch.dragging = false;
+      }, 16.6666);
+    } else {
+      if (event.button === 0) {
+        touch.position.x = event.clientX;
+        touch.position.y = event.clientY;
+        touch.movement.x = event.movementX;
+        touch.movement.y = event.movementY;
+        touch.dragging = true;
+        clearTimeout(touchMoveTimeout);
+        touchMoveTimeout = setTimeout(() => {
+          touch.dragging = false;
+        }, 16.6666);
+      }
+    }
+  };
+  let upHandler = (event) => {
+    event.preventDefault();
+    if (event.changedTouches) {
+      const firstTouch = Array.from(event.changedTouches).find(
+        (t) => t.identifier == 0
+      );
+      if (firstTouch) {
+        touch.down = false;
+        touch.position.x = firstTouch.clientX;
+        touch.position.y = firstTouch.clientY;
+      }
+    } else {
+      if (event.button === 0) {
+        touch.down = false;
+        touch.position.x = event.clientX;
+        touch.position.y = event.clientY;
+        touch.movement.x = 0;
+        touch.movement.y = 0;
+      }
+    }
+  };
+  renderer.domElement.addEventListener("mousedown", downHandler);
+  renderer.domElement.addEventListener("touchstart", downHandler);
+  renderer.domElement.addEventListener("mousemove", moveHandler);
+  renderer.domElement.addEventListener("touchmove", moveHandler);
+  renderer.domElement.addEventListener("mouseup", upHandler);
+  renderer.domElement.addEventListener("touchend", upHandler);
   return touch;
 }
