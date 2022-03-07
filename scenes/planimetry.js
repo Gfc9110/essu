@@ -9,22 +9,19 @@ import {
   Vector3,
 } from "three";
 import { generateBox } from "../utils/meshes/primitives";
-import mouseGen from "../utils/mouse";
 import fixCamera from "../utils/responsivePerspective";
 import touchGen from "../utils/touch";
-import Hammer from "hammerjs";
 
 export default async function (renderer) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
   const scene = new Scene();
-  const touch = touchGen(renderer);
-  const hammer = Hammer(renderer.domElement);
+  const { touch, touchUpdate } = touchGen(renderer);
   scene.background = new Color("#fffbf9");
   const camera = new PerspectiveCamera();
   camera.position.x = 0;
-  camera.position.y = -10;
-  camera.position.z = 10;
+  camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
+  camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
   camera.rotation.x = Math.PI / 4;
 
   const ambient = new AmbientLight("#fffbf9", 0.4);
@@ -62,22 +59,40 @@ export default async function (renderer) {
     new Vector3(3, 4, 1.5),
     "blue"
   );
+  box.userData["cursor"] = true;
   box.castShadow = true;
 
   scene.add(box);
 
-  /*hammer.on("pan", (event) => {
-    cameraBase.rotation.z -= event.velocityX * 0.02;
-    cameraArm.rotation.x += event.velocityY * 0.02;
-    cameraArm.rotation.x = Math.min(
-      Math.max(-Math.PI / 8, cameraArm.rotation.x),
-      Math.PI / 8
-    );
-    console.log(event);
-  });*/
+  /**
+   * @type {import("three").Mesh}
+   */
+  let hoverObject;
+  touch.onDown.push(() => {
+    if (hoverObject) {
+      hoverObject.material.color.set("red");
+    }
+  });
 
   function update(deltaTime, time) {
-    if (touch.down && touch.dragging) {
+    fixCamera(renderer, camera);
+    let none = true;
+    for (let intersection of touch.getIntersections(camera, scene)) {
+      none = false;
+      if (intersection.object.userData["cursor"]) {
+        renderer.domElement.style.cursor = "pointer";
+        hoverObject = intersection.object;
+        return;
+      } else {
+        renderer.domElement.style.cursor = "initial";
+        hoverObject = null;
+      }
+    }
+    if (none) {
+      renderer.domElement.style.cursor = "initial";
+      hoverObject = null;
+    }
+    if (touch.isDown && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.001;
       cameraArm.rotation.x -= touch.movement.y * 0.001;
       cameraArm.rotation.x = Math.min(
@@ -85,7 +100,6 @@ export default async function (renderer) {
         Math.PI / 8
       );
     }
-    fixCamera(renderer, camera);
   }
 
   return { scene, camera, update };

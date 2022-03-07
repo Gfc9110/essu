@@ -1,13 +1,28 @@
-import { Vector2 } from "three";
+import { Raycaster, Vector2 } from "three";
 import Hammer from "hammerjs";
 import mouse from "./mouse";
+
+const raycaster = new Raycaster();
 
 export default function (renderer) {
   const touch = {
     position: new Vector2(0, 0),
     movement: new Vector2(0, 0),
-    down: false,
+    isDown: false,
+    wentDown: false,
     dragging: false,
+    onDown: [],
+    onUp: [],
+    getIntersections: (camera, scene) => {
+      raycaster.setFromCamera(
+        {
+          x: (touch.position.x / renderer.domElement.width) * 2 - 1,
+          y: -(touch.position.y / renderer.domElement.height) * 2 + 1,
+        },
+        camera
+      );
+      return raycaster.intersectObjects(scene.children);
+    },
   };
   let touchMoveTimeout;
   let downHandler = (event) => {
@@ -17,7 +32,9 @@ export default function (renderer) {
         (t) => t.identifier == 0
       );
       if (firstTouch) {
-        touch.down = true;
+        touch.onDown.forEach((h) => h());
+        touch.isDown = true;
+        touch.wentDown = true;
         touch.position.x = firstTouch.clientX;
         touch.position.y = firstTouch.clientY;
         touch.movement.x = 0;
@@ -25,7 +42,9 @@ export default function (renderer) {
       }
     } else {
       if (event.button === 0) {
-        touch.down = true;
+        touch.onDown.forEach((h) => h());
+        touch.isDown = true;
+        touch.wentDown = true;
         touch.position.x = event.clientX;
         touch.position.y = event.clientY;
         touch.movement.x = 0;
@@ -45,14 +64,17 @@ export default function (renderer) {
         touch.position.x = firstTouch.clientX;
         touch.position.y = firstTouch.clientY;
         touch.dragging = true;
+        touch.wentDown = false;
       } else {
         touch.movement.x = 0;
         touch.movement.y = 0;
         touch.dragging = false;
+        touch.wentDown = false;
       }
       clearTimeout(touchMoveTimeout);
       touchMoveTimeout = setTimeout(() => {
         touch.dragging = false;
+        touch.wentDown = false;
       }, 16.6666);
     } else {
       if (event.button === 0) {
@@ -61,9 +83,11 @@ export default function (renderer) {
         touch.movement.x = event.movementX;
         touch.movement.y = event.movementY;
         touch.dragging = true;
+        touch.wentDown = false;
         clearTimeout(touchMoveTimeout);
         touchMoveTimeout = setTimeout(() => {
           touch.dragging = false;
+          touch.wentDown = false;
         }, 16.6666);
       }
     }
@@ -75,17 +99,19 @@ export default function (renderer) {
         (t) => t.identifier == 0
       );
       if (firstTouch) {
-        touch.down = false;
+        touch.isDown = false;
         touch.position.x = firstTouch.clientX;
         touch.position.y = firstTouch.clientY;
+        touch.wentDown = false;
       }
     } else {
       if (event.button === 0) {
-        touch.down = false;
+        touch.isDown = false;
         touch.position.x = event.clientX;
         touch.position.y = event.clientY;
         touch.movement.x = 0;
         touch.movement.y = 0;
+        touch.wentDown = false;
       }
     }
   };
@@ -93,7 +119,12 @@ export default function (renderer) {
   renderer.domElement.addEventListener("touchstart", downHandler);
   renderer.domElement.addEventListener("mousemove", moveHandler);
   renderer.domElement.addEventListener("touchmove", moveHandler);
-  renderer.domElement.addEventListener("mouseup", upHandler);
-  renderer.domElement.addEventListener("touchend", upHandler);
-  return touch;
+  window.addEventListener("mouseup", upHandler);
+  window.addEventListener("touchend", upHandler);
+  return {
+    touch,
+    touchUpdate: () => {
+      touch.wentDown = false;
+    },
+  };
 }
