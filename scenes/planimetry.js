@@ -54,43 +54,64 @@ export default async function (renderer) {
 
   scene.add(plane);
 
-  const box = generateBox(
+  const blueBox = generateBox(
     new Vector3(3.5, 0, 0.75),
     new Vector3(3, 4, 1.5),
     "blue"
   );
-  box.userData["cursor"] = true;
-  box.castShadow = true;
+  blueBox.userData["cursor"] = true;
+  blueBox.castShadow = true;
 
-  scene.add(box);
+  scene.add(blueBox);
+
+  const redBox = generateBox(
+    new Vector3(-3.5, -3.5, 0.75),
+    new Vector3(3, 3, 1.5),
+    "red"
+  );
+  redBox.userData["cursor"] = true;
+  redBox.castShadow = true;
+
+  scene.add(redBox);
+
+  const greenBox = generateBox(
+    new Vector3(0, 3.5, 0.75),
+    new Vector3(10, 3, 1.5),
+    "green"
+  );
+  greenBox.userData["cursor"] = true;
+  greenBox.castShadow = true;
+
+  scene.add(greenBox);
 
   /**
    * @type {import("three").Mesh}
    */
-  let hoverObject;
   touch.onDown.push(() => {
-    if (hoverObject) {
-      hoverObject.material.color.set("red");
+    for (let intersection of touch.getIntersections(camera, scene)) {
+      if (intersection.object.userData["cursor"]) {
+        intersection.object.material.color.set("#555");
+        return;
+      }
     }
   });
 
   function update(deltaTime, time) {
     fixCamera(renderer, camera);
+    camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
+    camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
     let none = true;
     for (let intersection of touch.getIntersections(camera, scene)) {
       none = false;
       if (intersection.object.userData["cursor"]) {
         renderer.domElement.style.cursor = "pointer";
-        hoverObject = intersection.object;
         return;
       } else {
         renderer.domElement.style.cursor = "initial";
-        hoverObject = null;
       }
     }
     if (none) {
       renderer.domElement.style.cursor = "initial";
-      hoverObject = null;
     }
     if (touch.isDown && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.001;

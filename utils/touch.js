@@ -32,23 +32,23 @@ export default function (renderer) {
         (t) => t.identifier == 0
       );
       if (firstTouch) {
-        touch.onDown.forEach((h) => h());
         touch.isDown = true;
         touch.wentDown = true;
         touch.position.x = firstTouch.clientX;
         touch.position.y = firstTouch.clientY;
         touch.movement.x = 0;
         touch.movement.y = 0;
+        touch.onDown.forEach((h) => h());
       }
     } else {
       if (event.button === 0) {
-        touch.onDown.forEach((h) => h());
         touch.isDown = true;
         touch.wentDown = true;
         touch.position.x = event.clientX;
         touch.position.y = event.clientY;
         touch.movement.x = 0;
         touch.movement.y = 0;
+        touch.onDown.forEach((h) => h());
       }
     }
   };
