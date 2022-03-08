@@ -91,6 +91,8 @@ export default async function (renderer) {
         light.position.y) *
       0.5;*/
     fixCameraAspect(renderer, camera, 100);
+
+    renderer.render(scene, camera);
   }
   return { scene, camera, update };
 }

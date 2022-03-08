@@ -8,17 +8,31 @@ import {
   Scene,
   Vector3,
 } from "three";
+import GUI from "../utils/gui";
 import { generateBox } from "../utils/meshes/primitives";
+import {
+  fixOrtho,
+  fixPersp,
+  resizeRendererToDisplaySize,
+} from "../utils/responsiveCamera";
 import fixCamera from "../utils/responsivePerspective";
 import touchGen from "../utils/touch";
 
+/**
+ *
+ * @param {import("three").WebGLRenderer} renderer
+ */
 export default async function (renderer) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
+
+  renderer.autoClear = false;
+
   const scene = new Scene();
   const { touch } = touchGen(renderer);
   scene.background = new Color("#fffbf9");
   const camera = new PerspectiveCamera();
+  const gui = new GUI(renderer, touch);
   camera.position.x = 0;
   camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
   camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
@@ -44,59 +58,17 @@ export default async function (renderer) {
   scene.add(cameraBase);
   scene.add(light);
 
-  const plane = generateBox(
-    new Vector3(0, 0, 0),
-    new Vector3(10, 10, 0.1),
-    "white"
-  );
+  const box = generateBox(new Vector3(0, 0, 0), new Vector3(2, 2, 2), "red");
 
-  plane.receiveShadow = true;
-
-  scene.add(plane);
-
-  const blueBox = generateBox(
-    new Vector3(3.5, 0, 0.8),
-    new Vector3(3, 4, 1.5),
-    "blue"
-  );
-  blueBox.userData["cursor"] = true;
-  blueBox.castShadow = true;
-
-  scene.add(blueBox);
-
-  const redBox = generateBox(
-    new Vector3(-3.5, -3.5, 0.8),
-    new Vector3(3, 3, 1.5),
-    "red"
-  );
-  redBox.userData["cursor"] = true;
-  redBox.castShadow = true;
-
-  scene.add(redBox);
-
-  const greenBox = generateBox(
-    new Vector3(0, 3.5, 0.8),
-    new Vector3(10, 3, 1.5),
-    "green"
-  );
-  greenBox.userData["cursor"] = true;
-  greenBox.castShadow = true;
-
-  scene.add(greenBox);
-
-  /**
-   * @type {import("three").Mesh}
-   */
-  touch.onDown.push(() => {
-    for (let intersection of touch.getIntersections(camera, scene)) {
-      if (intersection.object.userData["cursor"]) {
-        intersection.object.material.color.set("#555");
-        return;
-      }
-    }
-  });
+  scene.add(box);
 
   function update(deltaTime, time) {
+    if (resizeRendererToDisplaySize(renderer)) {
+      fixPersp(renderer, camera);
+      fixOrtho(renderer, gui.camera, renderer.domElement.height);
+      camera.updateProjectionMatrix();
+      gui.camera.updateProjectionMatrix();
+    }
     fixCamera(renderer, camera);
     camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
     camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
@@ -108,8 +80,9 @@ export default async function (renderer) {
         Math.PI / 8
       );
     }
-
+    renderer.clear();
     renderer.render(scene, camera);
+    renderer.render(gui.scene, gui.camera);
   }
 
   return { scene, camera, update };

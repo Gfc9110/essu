@@ -1,17 +1,17 @@
-import * as THREE from "three";
 import {
   SphereGeometry,
   BoxGeometry,
   MeshStandardMaterial,
   Mesh,
   Vector3,
+  CircleGeometry,
 } from "three";
 
 /**
  *
  * @param {Vector3} center
  * @param {Vector3} size
- * @param {THREE.ColorRepresentation} color
+ * @param {import("three").ColorRepresentation} color
  */
 export function generateBox(center, size, color) {
   const geometry = new BoxGeometry(size.x, size.y, size.z);
@@ -38,6 +38,14 @@ export function generateSphere(
   hSegments = 16
 ) {
   const geometry = new SphereGeometry(radius, wSegments, hSegments);
+  const material = new MeshStandardMaterial({ color });
+  const mesh = new Mesh(geometry, material);
+  mesh.position.set(center.x, center.y, center.z);
+  return mesh;
+}
+
+export function generateCircle(center, radius, color, segments) {
+  const geometry = new CircleGeometry(radius, segments);
   const material = new MeshStandardMaterial({ color });
   const mesh = new Mesh(geometry, material);
   mesh.position.set(center.x, center.y, center.z);

@@ -105,6 +105,8 @@ export default async (renderer) => {
     mesh.geometry = tp;
 
     fixCamera(renderer, camera, 100);
+
+    renderer.render(scene, camera);
   };
   return { scene, camera, update };
 };

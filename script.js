@@ -18,7 +18,7 @@ async function main() {
   canvas.addEventListener("mousemove", ({ movementX, movementY }) => {
     mouseMove = { x: movementX, y: movementY };
   });
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   const generated = await scenes[params.scene || "orthoCubes"](renderer);
 
   /**
@@ -37,8 +37,6 @@ async function main() {
   function render(newTime) {
     const deltaTime = newTime - time;
     updateScene(deltaTime, newTime);
-
-    renderer.render(scene, camera);
 
     time = newTime;
     requestAnimationFrame(render);

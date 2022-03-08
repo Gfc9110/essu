@@ -1,6 +1,4 @@
 import { Raycaster, Vector2 } from "three";
-import Hammer from "hammerjs";
-import mouse from "./mouse";
 
 const raycaster = new Raycaster();
 
@@ -12,6 +10,7 @@ export default function (renderer) {
     wentDown: false,
     dragging: false,
     onDown: [],
+    onMove: [],
     onUp: [],
     getIntersections: (camera, scene) => {
       raycaster.setFromCamera(
@@ -23,6 +22,21 @@ export default function (renderer) {
       );
       return raycaster.intersectObjects(scene.children);
     },
+  };
+  let emitDown = () => {
+    for (let fn of touch.onDown) {
+      if (fn()) break;
+    }
+  };
+  let emitUp = () => {
+    for (let fn of touch.onUp) {
+      if (fn()) break;
+    }
+  };
+  let emitMove = () => {
+    for (let fn of touch.onMove) {
+      if (fn()) break;
+    }
   };
   let touchMoveTimeout;
   let downHandler = (event) => {
@@ -38,7 +52,7 @@ export default function (renderer) {
         touch.position.y = firstTouch.clientY;
         touch.movement.x = 0;
         touch.movement.y = 0;
-        touch.onDown.forEach((h) => h());
+        emitDown();
       }
     } else {
       if (event.button === 0) {
@@ -48,7 +62,7 @@ export default function (renderer) {
         touch.position.y = event.clientY;
         touch.movement.x = 0;
         touch.movement.y = 0;
-        touch.onDown.forEach((h) => h());
+        emitDown();
       }
     }
   };
@@ -65,6 +79,7 @@ export default function (renderer) {
         touch.position.y = firstTouch.clientY;
         touch.dragging = true;
         touch.wentDown = false;
+        emitMove();
       } else {
         touch.movement.x = 0;
         touch.movement.y = 0;
@@ -84,6 +99,7 @@ export default function (renderer) {
         touch.movement.y = event.movementY;
         touch.dragging = true;
         touch.wentDown = false;
+        emitMove();
         clearTimeout(touchMoveTimeout);
         touchMoveTimeout = setTimeout(() => {
           touch.dragging = false;
@@ -103,6 +119,7 @@ export default function (renderer) {
         touch.position.x = firstTouch.clientX;
         touch.position.y = firstTouch.clientY;
         touch.wentDown = false;
+        emitUp();
       }
     } else {
       if (event.button === 0) {
@@ -112,6 +129,7 @@ export default function (renderer) {
         touch.movement.x = 0;
         touch.movement.y = 0;
         touch.wentDown = false;
+        emitUp();
       }
     }
   };

@@ -58,6 +58,8 @@ export default async (renderer) => {
       (mouse.position.x - canvas.width / 2) * -0.0001;
 
     fixCamera(renderer, camera, 100);
+
+    renderer.render(scene, camera);
   };
   return { scene, camera, update };
 };
