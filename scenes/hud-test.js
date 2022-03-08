@@ -3,12 +3,15 @@ import {
   Color,
   DirectionalLight,
   Group,
+  Mesh,
   PCFShadowMap,
   PerspectiveCamera,
+  RingGeometry,
   Scene,
   Vector3,
 } from "three";
 import GUI, { Input2D } from "../utils/gui";
+import gradientMaterial from "../utils/materials/gradientMaterial";
 import { generateBox } from "../utils/meshes/primitives";
 import {
   fixOrtho,
@@ -66,7 +69,7 @@ export default async function (renderer) {
     "green"
   );
 
-  scene.add(plane);
+  //scene.add(plane);
 
   const box = generateBox(new Vector3(0, 0, 0.55), new Vector3(1, 1, 1), "red");
 
@@ -77,6 +80,13 @@ export default async function (renderer) {
   input.position.y = -600;
   gui.addInput(input);
 
+  /*scene.add(
+    new Mesh(
+      new RingGeometry(3, 3.1, 32, 4),
+      new MeshStandardMaterial({ color: "red" })
+    )
+  );*/
+
   touch.onDown.push(() => {
     draggingCamera = true;
     return true;
@@ -85,6 +95,13 @@ export default async function (renderer) {
   touch.onUp.push(() => {
     draggingCamera = false;
   });
+
+  const gradientBoxGeometry = new RingGeometry(3, 3.1, 32, 4);
+  gradientBoxGeometry.computeBoundingBox();
+  console.log(gradientBoxGeometry);
+  const gMat = gradientMaterial("red", "blue", gradientBoxGeometry);
+
+  scene.add(new Mesh(gradientBoxGeometry, gMat))
 
   function update(deltaTime, time) {
     if (resizeRendererToDisplaySize(renderer)) {

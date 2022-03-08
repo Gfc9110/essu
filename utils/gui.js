@@ -149,3 +149,5 @@ export class Input2D extends Input {
     this.value.y = 0;
   }
 }
+
+export class Button extends Input {}
