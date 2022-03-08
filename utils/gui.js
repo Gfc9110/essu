@@ -6,7 +6,7 @@ import {
   OrthographicCamera,
   Scene,
   Vector3,
-  Vector2
+  Vector2,
 } from "three";
 import { generateBox, generateCircle } from "./meshes/primitives";
 
@@ -24,11 +24,6 @@ export default class GUI {
     this.camera.position.z = 2;
     this.camera.far = 3;
     this.camera.near = 1;
-
-    const input = new Input2D(this);
-    input.position.x = -200;
-    input.position.y = -200;
-    this.addInput(input);
     touch.onDown.push(this.onDown.bind(this));
     touch.onMove.push(this.onMove.bind(this));
     touch.onUp.push(this.onUp.bind(this));
@@ -87,30 +82,39 @@ export default class GUI {
     return result;
   }
   screenToWorld(position) {
-    const pos = position.clone().sub(new Vector2(this.renderer.domElement.width / 2, this.renderer.domElement.height / 2))
+    const pos = position
+      .clone()
+      .sub(
+        new Vector2(
+          this.renderer.domElement.width / 2,
+          this.renderer.domElement.height / 2
+        )
+      );
     pos.y = -pos.y;
-    return pos
+    return pos;
   }
   get worldTouch() {
-    return this.screenToWorld(this.touch.position)
+    return this.screenToWorld(this.touch.position);
   }
 }
 
 class Input extends Group {
-  onDown(inside) { }
-  onMove(inside) { }
-  onUp(inside) { }
+  onDown(inside) {}
+  onMove(inside) {}
+  onUp(inside) {}
 }
 
-class Input2D extends Input {
-  constructor(gui) {
+export class Input2D extends Input {
+  constructor(gui, size = 100) {
     super();
+    this.size = size;
+    this.value = new Vector2(0, 0);
     this.gui = gui;
-    this.base = generateCircle(new Vector3(0, 0, 0), 100, "black", 32);
+    this.base = generateCircle(new Vector3(0, 0, 0), size, "black", 32);
     this.base.material.transparent = true;
     this.base.material.opacity = 0.5;
 
-    this.handle = generateCircle(new Vector3(0, 0, 0), 45, "white", 32);
+    this.handle = generateCircle(new Vector3(0, 0, 0), size * 0.45, "blue", 32);
     this.handle.userData.receiveTouch = true;
     this.handle.userData.inputId = this.uuid;
     this.handle.material.transparent = true;
@@ -131,12 +135,17 @@ class Input2D extends Input {
        * @type {Vector2}
        */
       const reach = this.gui.worldTouch.sub(this.position);
-      reach.clampLength(0, 100);
-      this.handle.position.set(reach.x, reach.y)
+      reach.clampLength(0, this.size);
+      this.handle.position.set(reach.x, reach.y);
+      this.value.x = reach.x / this.size;
+      this.value.y = reach.y / this.size;
+      return true;
     }
   }
   onUp(inside) {
     this.dragging = false;
     this.handle.position.x = this.handle.position.y = 0;
+    this.value.x = 0;
+    this.value.y = 0;
   }
 }
