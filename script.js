@@ -18,7 +18,7 @@ async function main() {
   canvas.addEventListener("mousemove", ({ movementX, movementY }) => {
     mouseMove = { x: movementX, y: movementY };
   });
-  const renderer = new THREE.WebGLRenderer({ canvas });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
   const generated = await scenes[params.scene || "orthoCubes"](renderer);
 
   /**
