@@ -16,7 +16,7 @@ export default async function (renderer) {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFShadowMap;
   const scene = new Scene();
-  const { touch, touchUpdate } = touchGen(renderer);
+  const { touch } = touchGen(renderer);
   scene.background = new Color("#fffbf9");
   const camera = new PerspectiveCamera();
   camera.position.x = 0;

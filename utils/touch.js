@@ -123,8 +123,5 @@ export default function (renderer) {
   window.addEventListener("touchend", upHandler);
   return {
     touch,
-    touchUpdate: () => {
-      touch.wentDown = false;
-    },
   };
 }
