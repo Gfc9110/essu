@@ -72,9 +72,9 @@ export default async function (renderer) {
 
   scene.add(box);
 
-  const input = new Input2D(gui, 80);
-  input.position.x = 200;
-  input.position.y = -200;
+  const input = new Input2D(gui, 200);
+  input.position.x = 400;
+  input.position.y = -600;
   gui.addInput(input);
 
   touch.onDown.push(() => {
