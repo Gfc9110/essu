@@ -6,6 +6,7 @@ import {
   OrthographicCamera,
   Scene,
   Vector3,
+  Vector2
 } from "three";
 import { generateBox, generateCircle } from "./meshes/primitives";
 
@@ -24,7 +25,7 @@ export default class GUI {
     this.camera.far = 3;
     this.camera.near = 1;
 
-    const input = new Input2D();
+    const input = new Input2D(this);
     input.position.x = -200;
     input.position.y = -200;
     this.addInput(input);
@@ -85,17 +86,26 @@ export default class GUI {
     );
     return result;
   }
+  screenToWorld(position) {
+    const pos = position.clone().sub(new Vector2(this.renderer.domElement.width / 2, this.renderer.domElement.height / 2))
+    pos.y = -pos.y;
+    return pos
+  }
+  get worldTouch() {
+    return this.screenToWorld(this.touch.position)
+  }
 }
 
 class Input extends Group {
-  onDown(inside) {}
-  onMove(inside) {}
-  onUp(inside) {}
+  onDown(inside) { }
+  onMove(inside) { }
+  onUp(inside) { }
 }
 
 class Input2D extends Input {
-  constructor() {
+  constructor(gui) {
     super();
+    this.gui = gui;
     this.base = generateCircle(new Vector3(0, 0, 0), 100, "black", 32);
     this.base.material.transparent = true;
     this.base.material.opacity = 0.5;
@@ -111,17 +121,22 @@ class Input2D extends Input {
     this.add(this.base, this.handle);
   }
   onDown(inside) {
-    console.log("down", inside);
     if (inside) {
       this.dragging = true;
     }
   }
   onMove(inside) {
     if (this.dragging) {
-      console.log(this.position);
+      /**
+       * @type {Vector2}
+       */
+      const reach = this.gui.worldTouch.sub(this.position);
+      reach.clampLength(0, 100);
+      this.handle.position.set(reach.x, reach.y)
     }
   }
   onUp(inside) {
     this.dragging = false;
+    this.handle.position.x = this.handle.position.y = 0;
   }
 }
