@@ -55,7 +55,7 @@ export default async function (renderer) {
   scene.add(plane);
 
   const blueBox = generateBox(
-    new Vector3(3.5, 0, 0.75),
+    new Vector3(3.5, 0, 0.8),
     new Vector3(3, 4, 1.5),
     "blue"
   );
@@ -65,7 +65,7 @@ export default async function (renderer) {
   scene.add(blueBox);
 
   const redBox = generateBox(
-    new Vector3(-3.5, -3.5, 0.75),
+    new Vector3(-3.5, -3.5, 0.8),
     new Vector3(3, 3, 1.5),
     "red"
   );
@@ -75,7 +75,7 @@ export default async function (renderer) {
   scene.add(redBox);
 
   const greenBox = generateBox(
-    new Vector3(0, 3.5, 0.75),
+    new Vector3(0, 3.5, 0.8),
     new Vector3(10, 3, 1.5),
     "green"
   );
