@@ -73,7 +73,7 @@ export default async function (renderer) {
   scene.add(box);
 
   const input = new Input2D(gui, 200);
-  input.position.x = 400;
+  input.position.x = 0;
   input.position.y = -600;
   gui.addInput(input);
 
