@@ -98,7 +98,6 @@ export default async function (renderer) {
 
   const gradientBoxGeometry = new RingGeometry(3, 3.1, 32, 4);
   gradientBoxGeometry.computeBoundingBox();
-  console.log(gradientBoxGeometry);
   const gMat = gradientMaterial("red", "blue", gradientBoxGeometry);
 
   scene.add(new Mesh(gradientBoxGeometry, gMat))
