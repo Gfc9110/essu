@@ -100,19 +100,6 @@ export default async function (renderer) {
     fixCamera(renderer, camera);
     camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
     camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
-    let none = true;
-    for (let intersection of touch.getIntersections(camera, scene)) {
-      none = false;
-      if (intersection.object.userData["cursor"]) {
-        renderer.domElement.style.cursor = "pointer";
-        return;
-      } else {
-        renderer.domElement.style.cursor = "initial";
-      }
-    }
-    if (none) {
-      renderer.domElement.style.cursor = "initial";
-    }
     if (touch.isDown && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.001;
       cameraArm.rotation.x -= touch.movement.y * 0.001;
