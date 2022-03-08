@@ -1,11 +1,6 @@
-import orthoCubes from "./ortho-cubes";
-import waving from "./waving";
-import mouselight from "./mouselight";
-import planimetry from "./planimetry";
-
 export default {
-  orthoCubes,
-  waving,
-  mouselight,
-  planimetry,
+  orthoCubes: async (r) => (await import("./ortho-cubes")).default(r),
+  waving: async (r) => (await import("./waving")).default(r),
+  mouselight: async (r) => (await import("./mouselight")).default(r),
+  planimetry: async (r) => (await import("./planimetry")).default(r),
 };
