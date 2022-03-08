@@ -4,6 +4,7 @@ import { ShaderMaterial, Color } from "three";
  *
  * @param {import("three").ColorRepresentation} startColor
  * @param {import("three").ColorRepresentation} endColor
+ * @param {import("three").BufferGeometry} geometry
  * @returns
  */
 export default function (startColor, endColor, geometry) {
