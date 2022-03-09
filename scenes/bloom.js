@@ -35,7 +35,7 @@ export default async (renderer) => {
     const line = new Line(
       geo,
       new LineBasicMaterial({
-        color: "#392948",
+        color: "#563d6d",
         transparent: true,
         opacity: 1 - i * 0.025,
       })
