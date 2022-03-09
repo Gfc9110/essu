@@ -5,7 +5,7 @@ import {
     Color,
 } from "three";
 
-export default function (count, radiusStep, initialThickness, finalThickness, startRadius, initialtColor, finalColor) {
+export default function (count, radiusStep, startRadius, initialThickness, finalThickness, initialtColor, finalColor) {
     const circles = [];
 
     for(let i = 0; i < count; i++) {
