@@ -58,7 +58,7 @@ export default async function (renderer) {
 
   //Aggiunta cerchio
 
-  const circles = createCircles(20, 0.08, 0.005, 0.015, 1, 0x092B73, 0xEB16FE);
+  const circles = createCircles(20, 0.08, 0.01, 0.02, 1, 0x092B73, 0xEB16FE);
   
   scene.add(...circles);
 
