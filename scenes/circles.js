@@ -58,7 +58,7 @@ export default async function (renderer) {
 
   //Aggiunta cerchio
 
-  const circles = createCircles(20,0.1, 0.01, 0.7);
+  const circles = createCircles(20, 0.08, 0.005, 0.015, 1, 0x092B73, 0xEB16FE);
   
   scene.add(...circles);
 
@@ -97,8 +97,8 @@ export default async function (renderer) {
 
     if(touch.dragging){
       circles.forEach((circle, i) => {
-        circle.position.x += touch.movement.x * 0.0005 * i; 
-        circle.position.y += touch.movement.y * -0.0005 * i; 
+        circle.position.x += touch.movement.x * 0.0005 * Math.abs(i - circles.length/2); 
+        circle.position.y += touch.movement.y * -0.0005 * Math.abs(i - circles.length/2); 
       });
     }
     
