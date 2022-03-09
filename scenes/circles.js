@@ -81,8 +81,10 @@ export default async function (renderer) {
   function update(deltaTime, time) {
 
     fixCamera(renderer, camera);
+    
     camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
     camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
+    /*
     if (touch.isDown && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.001;
       cameraArm.rotation.x -= touch.movement.y * 0.001;
@@ -90,7 +92,12 @@ export default async function (renderer) {
         Math.max(-Math.PI / 8, cameraArm.rotation.x),
         Math.PI / 8
       );
+      console.log(cameraArm.rotation.x);
     }
+    */
+
+    cameraArm.rotation.x = -0.5;
+    
 
     renderer.render(scene, camera);
 
