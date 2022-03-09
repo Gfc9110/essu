@@ -5,4 +5,5 @@ export default {
   planimetry: async (r) => (await import("./planimetry")).default(r),
   circles: async (r) => (await import("./circles")).default(r),
   'hud-test': async (r) => (await import("./hud-test")).default(r),
+  'bloom': async (r) => (await import("./bloom")).default(r),
 };
