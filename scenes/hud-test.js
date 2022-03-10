@@ -10,7 +10,6 @@ import {
   Scene,
   Vector3,
 } from "three";
-import GUI, { Input2D } from "../utils/gui";
 import gradientMaterial from "../utils/materials/gradientMaterial";
 import { generateBox } from "../utils/meshes/primitives";
 import {
@@ -20,6 +19,8 @@ import {
 } from "../utils/responsiveCamera";
 import fixCamera from "../utils/responsivePerspective";
 import touchGen from "../utils/touch";
+import MultitouchInput from "../utils/input/multitouch";
+import GuiManager from "../utils/gui/gui";
 
 /**
  *
@@ -31,11 +32,15 @@ export default async function (renderer) {
 
   renderer.autoClear = false;
 
+  const multitouch = new MultitouchInput(renderer);
+
+  const gui = new GuiManager(renderer, multitouch);
+
   const scene = new Scene();
   const { touch } = touchGen(renderer);
   scene.background = new Color("#fffbf9");
   const camera = new PerspectiveCamera();
-  const gui = new GUI(renderer, touch);
+  //const gui = new GUI(renderer, touch);
   camera.position.x = 0;
   camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
   camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
@@ -75,10 +80,10 @@ export default async function (renderer) {
 
   scene.add(box);
 
-  const input = new Input2D(gui, 200);
-  input.position.x = 0;
-  input.position.y = -600;
-  gui.addInput(input);
+  //const input = new Input2D(gui, 200);
+  //input.position.x = 0;
+  //input.position.y = -600;
+  //gui.addInput(input);
 
   /*scene.add(
     new Mesh(
@@ -100,7 +105,7 @@ export default async function (renderer) {
   gradientBoxGeometry.computeBoundingBox();
   const gMat = gradientMaterial("red", "blue", gradientBoxGeometry);
 
-  scene.add(new Mesh(gradientBoxGeometry, gMat))
+  scene.add(new Mesh(gradientBoxGeometry, gMat));
 
   function update(deltaTime, time) {
     if (resizeRendererToDisplaySize(renderer)) {
@@ -120,8 +125,8 @@ export default async function (renderer) {
         Math.PI / 8
       );
     }
-    box.position.x += input.value.x * 0.1;
-    box.position.y += input.value.y * 0.1;
+    //box.position.x += input.value.x * 0.1;
+    //box.position.y += input.value.y * 0.1;
 
     //console.log(input.value);
 
