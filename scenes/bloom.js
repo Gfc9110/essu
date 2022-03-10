@@ -74,6 +74,7 @@ export default async (renderer) => {
     }
 
     camera.position.z = window.innerHeight > window.innerWidth ? 23 : 12;
+    camera.position.x = window.innerHeight > window.innerWidth ? 0 : -4;
     const points = [];
     for (let i = 0; i <= Math.PI * 2 + 0.001; i += (Math.PI * 2) / segments) {
       const x = Math.cos(i);
