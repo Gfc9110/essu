@@ -31,18 +31,19 @@ export default async (renderer) => {
 
   let geo = new BufferGeometry();
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 160; i++) {
     const line = new Line(
       geo,
       new LineBasicMaterial({
         color: "#563d6d",
         transparent: true,
-        opacity: 1 - i * 0.025,
+        opacity: 1,
       })
     );
     line.scale.multiplyScalar(1 - i * 0.02);
-    line.position.x = i * 0.04;
-    line.position.y = -i * 0.02;
+    line.rotation.z = i * 0.02;
+    line.position.x = i * 0.07;
+    line.position.y = -i * 0.04;
     line.position.z = -0.1;
     scene.add(line);
   }
