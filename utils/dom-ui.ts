@@ -19,6 +19,11 @@ export default function (data: {
   openPresetButton.target = "_blank";
   openPresetButton.id = "createPresetButton";
 
+  //Nasconde ui se parametro "ui-hide" è settato
+  if(window.queryParams['ui-hide']) {
+    container.style.display = "none";
+  }
+  
   function updateButton() {
     const parameters = new URLSearchParams();
     Object.keys(params).forEach((key) => {
@@ -75,6 +80,7 @@ export default function (data: {
     element.appendChild(input);
   });
   container.appendChild(openPresetButton);
+
 
   return out;
 }
