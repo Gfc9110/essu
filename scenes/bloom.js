@@ -91,3 +91,5 @@ export default async (renderer) => {
 
   return { scene, camera, update };
 };
+
+
