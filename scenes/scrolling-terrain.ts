@@ -291,8 +291,8 @@ export default function (renderer: WebGLRenderer) {
     }
 
     if (draggingCamera && touch.dragging) {
-      cameraBase.rotation.z -= touch.movement.x * 0.01;
-      cameraArm.rotation.x -= touch.movement.y * 0.01;
+      cameraBase.rotation.z -= touch.movement.x * 0.003;
+      cameraArm.rotation.x -= touch.movement.y * 0.003;
     }
     cameraArm.rotation.x = Math.min(
       Math.max(-Math.PI / 8, cameraArm.rotation.x),
