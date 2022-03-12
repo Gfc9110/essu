@@ -85,12 +85,12 @@ export default async (renderer) => {
     externalColor: {
       label: "Colore Esterno",
       type: "color",
-      startValue: "#CA7D7F",
+      startValue: "#a69ebd",
     },
     internalColor: {
       label: "Colore Interno",
       type: "color",
-      startValue: "#891645",
+      startValue: "#bd4267",
     },
     alphaFactor: {
       label: "Fattore Trasparenza",
