@@ -75,7 +75,7 @@ export default async (renderer) => {
       type: "range",
       min: "0",
       max: "2",
-      startValue: "0.8",
+      startValue: "1.2",
     },
     backgroundColor: {
       label: "Colore di Sfondo",
