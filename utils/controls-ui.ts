@@ -97,6 +97,5 @@ export default function (data: {
   });
   container.appendChild(openPresetButton);
 
-
   return out;
 }
