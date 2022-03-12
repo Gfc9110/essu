@@ -3,7 +3,7 @@ import "./style.sass";
 
 import * as THREE from "three";
 
-const params = new Proxy(new URLSearchParams(window.location.search), {
+const params = window.queryParams = new Proxy(new URLSearchParams(window.location.search), {
   get: (searchParams, prop) => searchParams.get(prop),
 });
 
