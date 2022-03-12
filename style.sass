@@ -17,6 +17,8 @@ body
 
         padding: 60px 60px
 
+        font-size: .8em
+
 
     .ui-input
         display: flex
@@ -24,13 +26,18 @@ body
         flex-wrap: wrap
 
         margin-bottom: .8em
+
+        
         
         label
             //width: 7em
             width: 70%
+            font-weight: 400
         
         input[type="range"]
             flex: auto
+            &:hover
+                cursor: e-resize
 
         span
             font-family: 'Red Hat Mono', monospace
@@ -38,17 +45,65 @@ body
             text-align: right
 
             vertical-align: middle
+
+    #createPresetButton
+        padding: 8px 12px
+        
+        border: solid 1px #C73A7677
+        border-radius: 4px
+
+        margin: 2em auto
+
+        color: white!important
+        text-decoration: none
+        font-weight: 400
+
+        transition: background-color .3s
+
+        &:hover
+            background-color: #C73A7677
+
+
             
 
     #controlli-bloom
-        display: inline-block
+        display: flex
+        flex-direction: column
+        
+        width: 300px
+        max-height: 100%
+
+        overflow-y: auto
 
         background-color: rgba(0, 0, 0, .5)
         color: #fff
 
         padding: .7em 1em
+        padding-bottom: 2em
 
-        width: 300px
+        border-radius: 8px
+
+
+        /* Works on Firefox */
+        scrollbar-width: thin
+        scrollbar-color: #C73A7633 #C73A760f
+        
+
+        /* Works on Chrome, Edge, and Safari */
+        &::-webkit-scrollbar 
+            width: 12px
+        
+
+        &::-webkit-scrollbar-track 
+            background: #C73A7633
+        
+
+        &::-webkit-scrollbar-thumb 
+            background-color: transparent
+            border-radius: 20px
+            border: 3px solid #C73A7677
+        
+
 
         
 

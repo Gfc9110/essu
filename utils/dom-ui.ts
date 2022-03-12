@@ -1,11 +1,33 @@
 export default function (data: {
-  [key: string]: { label: string; type: string; startValue?: string};
+  [key: string]: {
+    label: string;
+    type: string;
+    startValue?: string;
+    min?: string;
+    max?: string;
+    step?: string;
+  };
 }) {
   const container = document.querySelector("#controlli-bloom");
   const out = {};
+  // @ts-ignore
+  const params = { scene: window.queryParams.scene };
+
+  const openPresetButton = document.createElement("a");
+  openPresetButton.textContent = "Crea Preset";
+  openPresetButton.href = "/";
+  openPresetButton.target = "_blank";
+  openPresetButton.id = "createPresetButton";
+
+  function updateButton() {
+    const parameters = new URLSearchParams();
+    Object.keys(params).forEach((key) => {
+      parameters.set(key, params[key]);
+    });
+    openPresetButton.href = "/?" + parameters.toString();
+  }
 
   Object.keys(data).forEach((varName) => {
-
     const element = container.appendChild(document.createElement("div"));
     element.className = "ui-input";
     const label = document.createElement("label");
@@ -25,26 +47,34 @@ export default function (data: {
       case "range":
         toLabel = (stringValue: string) => parseFloat(stringValue).toFixed(2);
         toValue = (stringValue: string) => parseFloat(stringValue);
-        input.min = "-100";
-        input.max = "100";
-        input.step = "0.5";
-        input.value = data[varName].startValue || "0";        
+        input.min = data[varName].min || "-100";
+        input.max = data[varName].max || "100";
+        input.step = data[varName].step || "0.1";
+        // @ts-ignore
+        params[varName] = input.value = window.queryParams[varName] || data[varName].startValue || "0";
         break;
       case "color":
-        input.value = data[varName].startValue || "#000000";
+        // @ts-ignore
+        params[varName] = input.value = window.queryParams[varName] || data[varName].startValue || "#000000";
         break;
     }
 
-    
     out[varName] = toValue(input.value);
     span.textContent = toLabel(input.value);
 
+    updateButton();
+
     input.addEventListener("input", (event) => {
-      const value = (event.target as HTMLInputElement).value;
+      const value = (params[varName] = (
+        event.target as HTMLInputElement
+      ).value);
       out[varName] = toValue(value);
       span.textContent = toLabel(value);
+      updateButton();
     });
     element.appendChild(input);
   });
+  container.appendChild(openPresetButton);
+
   return out;
 }
