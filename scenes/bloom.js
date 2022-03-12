@@ -15,7 +15,7 @@ import {
   ShapeGeometry,
   Vector2,
 } from "three";
-import domUi from "../utils/dom-ui";
+import domUi from "../utils/controls-ui";
 import gradientMaterial from "../utils/materials/gradientMaterial";
 import {
   fixPersp,
@@ -192,5 +192,3 @@ export default async (renderer) => {
 
   return { scene, camera, update };
 };
-
-
