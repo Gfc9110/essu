@@ -172,6 +172,14 @@ export default function (renderer: WebGLRenderer) {
       step: "0.01",
       startValue: "0.5",
     },
+    terrainOpacity: {
+      label: "Transparenza Materiale",
+      type: "range",
+      min: "0",
+      max: "1",
+      step: "0.01",
+      startValue: "1",
+    },
   });
 
   //camera.position.z = 0;
@@ -199,6 +207,8 @@ export default function (renderer: WebGLRenderer) {
     new MeshPhysicalMaterial({
       color: controls.terrainColor,
       roughness: controls.terrainRoughness,
+      transparent: true,
+      opacity: controls.terrainOpacity,
     })
   );
 
@@ -300,6 +310,7 @@ export default function (renderer: WebGLRenderer) {
     );
     planeMesh.material.color.set(controls.terrainColor);
     planeMesh.material.roughness = controls.terrainRoughness;
+    planeMesh.material.opacity = controls.terrainOpacity;
 
     renderer.render(scene, camera);
   }
