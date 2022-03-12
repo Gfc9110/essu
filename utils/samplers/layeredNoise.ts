@@ -14,7 +14,8 @@ export default function (
         y / currentValue.scale,
         z / currentValue.scale,
         w / currentValue.scale
-      )
+      ) *
+        currentValue.amplitude
     );
   }, 0);
 }

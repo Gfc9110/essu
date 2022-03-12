@@ -4,6 +4,7 @@ import {
   DirectionalLight,
   Group,
   Mesh,
+  MeshPhysicalMaterial,
   MeshStandardMaterial,
   OrthographicCamera,
   PerspectiveCamera,
@@ -33,40 +34,24 @@ export default function (renderer: WebGLRenderer) {
   camera.rotation.x = Math.PI / 4;
 
   let draggingCamera = false;
-  camera.position.z = 10;
   const { touch } = touchGen(renderer);
 
-  const controls: {
-    planeSizeX: number;
-    planeSizeY: number;
-    planeDivisionX: number;
-    planeDivisionY: number;
-    lightPositionX: number;
-    lightPositionY: number;
-    lightPositionZ: number;
-    lightColor: string;
-    lightIntensity: number;
-    backgroundColor: string;
-    terrainColor: string;
-    cameraRotationZ: number;
-    cameraRotationX: number;
-    noiseScale: number;
-  } = controlsUi({
+  const controls: any = controlsUi({
     planeSizeX: {
       label: "Larghezza Terreno",
       type: "range",
       min: "1",
-      max: "30",
-      step: "0.1",
-      startValue: "7",
+      max: "100",
+      step: "1",
+      startValue: "30",
     },
     planeSizeY: {
       label: "Lunghezza Terreno",
       type: "range",
       min: "1",
-      max: "30",
-      step: "0.1",
-      startValue: "5",
+      max: "100",
+      step: "1",
+      startValue: "30",
     },
     planeDivisionX: {
       type: "range",
@@ -74,7 +59,7 @@ export default function (renderer: WebGLRenderer) {
       min: "1",
       max: "100",
       step: "1",
-      startValue: "7",
+      startValue: "30",
     },
     planeDivisionY: {
       type: "range",
@@ -82,7 +67,7 @@ export default function (renderer: WebGLRenderer) {
       min: "1",
       max: "100",
       step: "1",
-      startValue: "5",
+      startValue: "30",
     },
     lightPositionX: {
       label: "Luce X",
@@ -129,12 +114,12 @@ export default function (renderer: WebGLRenderer) {
     terrainColor: {
       label: "Colore Terreno",
       type: "color",
-      startValue: "#777700",
+      startValue: "#002233",
     },
     cameraRotationZ: {
       type: "range",
       label: "Rotazione Vista",
-      startValue: "0",
+      startValue: "-3.14",
       min: "-3.14",
       max: "3.14",
       step: "0.01",
@@ -142,10 +127,18 @@ export default function (renderer: WebGLRenderer) {
     cameraRotationX: {
       type: "range",
       label: "Inclinazione Vista",
-      startValue: "0",
+      startValue: "0.15",
       min: "-0.39",
       max: "0.39",
       step: "0.01",
+    },
+    cameraDistance: {
+      type: "range",
+      label: "Distanza Vista",
+      startValue: "22",
+      min: "0",
+      max: "100",
+      step: "1",
     },
     noiseScale: {
       label: "Scala Noise",
@@ -153,9 +146,36 @@ export default function (renderer: WebGLRenderer) {
       min: "0.1",
       max: "10",
       step: "0.1",
+      startValue: "4",
+    },
+    noiseAmplitude: {
+      label: "Ampiezza Noise",
+      type: "range",
+      min: "0.1",
+      max: "10",
+      step: "0.1",
       startValue: "1",
     },
+    noiseSpeed: {
+      label: "Velocità",
+      type: "range",
+      min: "-5",
+      max: "5",
+      step: "0.01",
+      startValue: "0.2",
+    },
+    terrainRoughness: {
+      label: "Ruvidità Materiale",
+      type: "range",
+      min: "0",
+      max: "1",
+      step: "0.01",
+      startValue: "0.5",
+    },
   });
+
+  //camera.position.z = 0;
+  camera.translateZ(controls.cameraDistance);
 
   const planeGeometry = trianglePlane(
     controls.planeSizeX / controls.planeDivisionX,
@@ -176,7 +196,10 @@ export default function (renderer: WebGLRenderer) {
 
   const planeMesh = new Mesh(
     planeGeometry,
-    new MeshStandardMaterial({ color: controls.terrainColor })
+    new MeshPhysicalMaterial({
+      color: controls.terrainColor,
+      roughness: controls.terrainRoughness,
+    })
   );
 
   scene.add(planeMesh, sun, new AmbientLight("white", 0.3));
@@ -186,6 +209,8 @@ export default function (renderer: WebGLRenderer) {
 
   const cameraBase = new Group();
   cameraBase.add(cameraArm);
+  cameraBase.rotation.z = controls.cameraRotationZ;
+  cameraArm.rotation.x = controls.cameraRotationX;
 
   scene.add(cameraBase);
 
@@ -200,6 +225,9 @@ export default function (renderer: WebGLRenderer) {
 
   let lastCameraRotationZ = controls.cameraRotationZ;
   let lastCameraRotationX = controls.cameraRotationX;
+  let lastCameraDistance = controls.cameraDistance;
+
+  let terrainTime = 0;
 
   renderer.domElement.addEventListener("wheel", ({ deltaY }) => {
     camera.translateZ(deltaY * 0.01);
@@ -210,16 +238,26 @@ export default function (renderer: WebGLRenderer) {
       fixPersp(renderer, camera);
       camera.updateProjectionMatrix();
     }
+    terrainTime += deltaTime * controls.noiseSpeed;
     planeMesh.geometry.dispose();
     planeMesh.geometry = trianglePlane(
       controls.planeSizeX / controls.planeDivisionX,
       controls.planeDivisionX,
       controls.planeDivisionY,
       ({ x, y }) => {
-        return layeredNoise(new Vector4(x, y, 0, 0), [
-          { scale: 100 * controls.noiseScale, amplitude: 1 },
-          { scale: 10 * controls.noiseScale, amplitude: 0.1 },
-          { scale: 1 * controls.noiseScale, amplitude: 0.01 },
+        return layeredNoise(new Vector4(x, y, terrainTime * 0.01, 0), [
+          {
+            scale: 10 * controls.noiseScale,
+            amplitude: 3 * controls.noiseAmplitude,
+          },
+          {
+            scale: 3 * controls.noiseScale,
+            amplitude: 1 * controls.noiseAmplitude,
+          },
+          {
+            scale: 1 * controls.noiseScale,
+            amplitude: 0.2 * controls.noiseAmplitude,
+          },
         ]);
       },
       controls.planeSizeY / controls.planeDivisionY
@@ -237,6 +275,7 @@ export default function (renderer: WebGLRenderer) {
     scene.background
       ? (scene.background as Color).set(controls.backgroundColor)
       : (scene.background = new Color(controls.backgroundColor));
+
     if (lastCameraRotationZ !== controls.cameraRotationZ) {
       cameraBase.rotation.z = controls.cameraRotationZ;
       lastCameraRotationZ = controls.cameraRotationZ;
@@ -245,6 +284,12 @@ export default function (renderer: WebGLRenderer) {
       cameraArm.rotation.x = controls.cameraRotationX;
       lastCameraRotationX = controls.cameraRotationX;
     }
+
+    if (lastCameraDistance !== controls.cameraDistance) {
+      camera.translateZ(-lastCameraDistance + controls.cameraDistance);
+      lastCameraDistance = controls.cameraDistance;
+    }
+
     if (draggingCamera && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.01;
       cameraArm.rotation.x -= touch.movement.y * 0.01;
@@ -254,6 +299,7 @@ export default function (renderer: WebGLRenderer) {
       Math.PI / 8
     );
     planeMesh.material.color.set(controls.terrainColor);
+    planeMesh.material.roughness = controls.terrainRoughness;
 
     renderer.render(scene, camera);
   }
