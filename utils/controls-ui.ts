@@ -1,7 +1,7 @@
 export default function (data: {
   [key: string]: {
     label: string;
-    type: string;
+    type: "range" | "color";
     startValue?: string;
     min?: string;
     max?: string;
@@ -69,12 +69,14 @@ export default function (data: {
         input.min = data[varName].min || "-100";
         input.max = data[varName].max || "100";
         input.step = data[varName].step || "0.1";
-        // @ts-ignore
-        params[varName] = input.value = window.queryParams[varName] || data[varName].startValue || "0";
+        params[varName] = input.value =
+          // @ts-ignore
+          window.queryParams[varName] || data[varName].startValue || "0";
         break;
       case "color":
-        // @ts-ignore
-        params[varName] = input.value = window.queryParams[varName] || data[varName].startValue || "#000000";
+        params[varName] = input.value =
+          // @ts-ignore
+          window.queryParams[varName] || data[varName].startValue || "#000000";
         break;
     }
 
