@@ -1,7 +1,12 @@
+/**
+ *
+ * @param {import("three").WebGLRenderer} renderer
+ * @returns
+ */
 export function resizeRendererToDisplaySize(renderer) {
   const canvas = renderer.domElement;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
+  const width = document.body.clientWidth;
+  const height = document.body.clientHeight;
   const needResize = canvas.width !== width || canvas.height !== height;
   if (needResize) {
     renderer.setSize(width, height, false);
@@ -16,9 +21,11 @@ export function fixOrtho(renderer, camera, height) {
   camera.right = (aspect * height) / 2;
   camera.top = height / 2;
   camera.bottom = -height / 2;
+  camera.updateProjectionMatrix();
 }
 
 export function fixPersp(renderer, camera) {
   const canvas = renderer.domElement;
   camera.aspect = canvas.clientWidth / canvas.clientHeight;
+  camera.updateProjectionMatrix();
 }

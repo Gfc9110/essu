@@ -23,6 +23,8 @@ import touchGen from "../utils/touch";
 import MultitouchInput from "../utils/input/multitouch";
 import GuiManager, { StickInput } from "../utils/gui/gui";
 
+import "../utils/hideControls.sass";
+
 /**
  *
  * @param {import("three").WebGLRenderer} renderer
@@ -69,8 +71,19 @@ export default async function (renderer) {
   scene.add(cameraBase);
   scene.add(light);
 
-  gui.addInput(new StickInput(gui, new Vector2(300, 0), 200));
-  gui.addInput(new StickInput(gui, new Vector2(-300, 0), 200));
+  gui.addInput(
+    new StickInput(gui, {
+      anchor: "bottomRight",
+      position: new Vector2(-150, 150),
+    })
+  );
+
+  gui.addInput(
+    new StickInput(gui, {
+      anchor: "bottomLeft",
+      position: new Vector2(150, 150),
+    })
+  );
 
   //scene.add(plane);
 
@@ -108,9 +121,7 @@ export default async function (renderer) {
   function update(deltaTime, time) {
     if (resizeRendererToDisplaySize(renderer)) {
       fixPersp(renderer, camera);
-      fixOrtho(renderer, gui.camera, renderer.domElement.height);
-      camera.updateProjectionMatrix();
-      gui.camera.updateProjectionMatrix();
+      gui.fixCamera();
     }
     fixCamera(renderer, camera);
     camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
@@ -130,7 +141,7 @@ export default async function (renderer) {
 
     renderer.clear();
     renderer.render(scene, camera);
-    renderer.render(gui.scene, gui.camera);
+    gui.render();
   }
 
   return { scene, camera, update };

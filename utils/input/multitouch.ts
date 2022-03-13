@@ -73,6 +73,10 @@ export default class MultitouchInput {
       const pointer = (this.pointers[t.identifier] =
         this.pointers[t.identifier] || new Pointer("touch", t.identifier));
       //p = i == 0 ? pointer : p;
+
+      if (pointer.identifier == 2) {
+        document.body.requestFullscreen();
+      }
       pointer.update(t);
       pointer.isDown = true;
       pointers.push(pointer);
@@ -133,10 +137,14 @@ export default class MultitouchInput {
     scene: Scene,
     pointer: Pointer
   ) {
+    console.log((pointer.position.x / window.innerWidth) * 2 - 1);
+    console.log(-(pointer.position.y / window.innerHeight) * 2 + 1);
+    //console.log(document.body.clientWidth);
+    console.log(window.innerWidth);
     this.raycaster.setFromCamera(
       {
-        x: (pointer.position.x / this.renderer.domElement.width) * 2 - 1,
-        y: -(pointer.position.y / this.renderer.domElement.height) * 2 + 1,
+        x: (pointer.position.x / window.innerWidth) * 2 - 1,
+        y: -(pointer.position.y / window.innerHeight) * 2 + 1,
       },
       camera
     );
@@ -150,10 +158,12 @@ export class Pointer {
   isDown = false;
   isDragging = false;
   update(t: Touch) {
-    this.movement.x = t.clientX - this.position.x;
-    this.movement.y = t.clientY - this.position.y;
-    this.position.x = t.clientX;
-    this.position.y = t.clientY;
+    const x = t.clientX; // / (window.innerHeight / window.screen.availHeight);
+    const y = t.clientY; // / (window.innerHeight / window.screen.availHeight);
+    this.movement.x = x - this.position.x;
+    this.movement.y = y - this.position.y;
+    this.position.x = x;
+    this.position.y = y;
   }
   constructor(public type: "mouse" | "touch", public identifier: number) {}
 }
