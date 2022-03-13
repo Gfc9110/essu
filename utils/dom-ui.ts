@@ -22,19 +22,16 @@ export default function (data: {
 
   //Mostra la ui di default se parametro "ui-show" è settato
   if(window.queryParams['ui-show']) {
-    container.classList.remove = "hidden";
+    container.classList.remove("hidden");
   } else {
     container.classList.add("hidden");
   }
   
   document.addEventListener("keydown", function(e) {
-    
     var keyCode = e.code;
     
     if(keyCode == "KeyK"){
-      
       container.classList.toggle("hidden");
-
     }
 
   });
