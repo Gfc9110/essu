@@ -3,14 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "sass": "^1.49.9",
     "vite": "^2.8.0"
   },
   "dependencies": {
+    "@types/three": "^0.138.0",
     "hammerjs": "^2.0.8",
     "simplex-noise": "^3.0.1",
     "three": "^0.138.3"

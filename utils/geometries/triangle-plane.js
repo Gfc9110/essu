@@ -11,7 +11,7 @@ export default function (
   vertexSpacing,
   sizeX,
   sizeY,
-  sampler = () => 0,
+  sampler = ({ x, y }) => 0,
   verticalSpacing = null
 ) {
   const geometry = new BufferGeometry();

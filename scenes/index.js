@@ -4,6 +4,9 @@ export default {
   mouselight: async (r) => (await import("./mouselight")).default(r),
   planimetry: async (r) => (await import("./planimetry")).default(r),
   circles: async (r) => (await import("./circles")).default(r),
-  'hud-test': async (r) => (await import("./hud-test")).default(r),
-  'bloom': async (r) => (await import("./bloom")).default(r),
+  "hud-test": async (r) => (await import("./hud-test")).default(r),
+  bloom: async (r) => (await import("./bloom")).default(r),
+  "scrolling-terrain": async (r) =>
+    (await import("./scrolling-terrain")).default(r),
+  particles: async (r) => (await import("./particles")).default(r),
 };
