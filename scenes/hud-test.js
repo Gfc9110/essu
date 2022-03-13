@@ -8,6 +8,7 @@ import {
   PerspectiveCamera,
   RingGeometry,
   Scene,
+  Vector2,
   Vector3,
 } from "three";
 import gradientMaterial from "../utils/materials/gradientMaterial";
@@ -20,7 +21,7 @@ import {
 import fixCamera from "../utils/responsivePerspective";
 import touchGen from "../utils/touch";
 import MultitouchInput from "../utils/input/multitouch";
-import GuiManager from "../utils/gui/gui";
+import GuiManager, { StickInput } from "../utils/gui/gui";
 
 /**
  *
@@ -37,7 +38,7 @@ export default async function (renderer) {
   const gui = new GuiManager(renderer, multitouch);
 
   const scene = new Scene();
-  const { touch } = touchGen(renderer);
+  //const { touch } = touchGen(renderer);
   scene.background = new Color("#fffbf9");
   const camera = new PerspectiveCamera();
   //const gui = new GUI(renderer, touch);
@@ -68,11 +69,8 @@ export default async function (renderer) {
   scene.add(cameraBase);
   scene.add(light);
 
-  const plane = generateBox(
-    new Vector3(0, 0, 0),
-    new Vector3(10, 10, 0.1),
-    "green"
-  );
+  gui.addInput(new StickInput(gui, new Vector2(300, 0), 200));
+  gui.addInput(new StickInput(gui, new Vector2(-300, 0), 200));
 
   //scene.add(plane);
 
@@ -92,14 +90,14 @@ export default async function (renderer) {
     )
   );*/
 
-  touch.onDown.push(() => {
+  /*touch.onDown.push(() => {
     draggingCamera = true;
     return true;
-  });
+  });*/
 
-  touch.onUp.push(() => {
+  /*touch.onUp.push(() => {
     draggingCamera = false;
-  });
+  });*/
 
   const gradientBoxGeometry = new RingGeometry(3, 3.1, 32, 4);
   gradientBoxGeometry.computeBoundingBox();
@@ -117,14 +115,14 @@ export default async function (renderer) {
     fixCamera(renderer, camera);
     camera.position.y = window.innerHeight > window.innerWidth ? -20 : -10;
     camera.position.z = window.innerHeight > window.innerWidth ? 20 : 10;
-    if (draggingCamera && touch.dragging) {
+    /*if (draggingCamera && touch.dragging) {
       cameraBase.rotation.z -= touch.movement.x * 0.001;
       cameraArm.rotation.x -= touch.movement.y * 0.001;
       cameraArm.rotation.x = Math.min(
         Math.max(-Math.PI / 8, cameraArm.rotation.x),
         Math.PI / 8
       );
-    }
+    }*/
     //box.position.x += input.value.x * 0.1;
     //box.position.y += input.value.y * 0.1;
 

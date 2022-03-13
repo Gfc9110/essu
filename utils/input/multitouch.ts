@@ -8,12 +8,12 @@ import {
 } from "three";
 import touch from "../touch";
 
-type TouchListener = (p: Pointer) => boolean;
+export type TouchListener = (p: Pointer) => boolean;
 
 const emitPointer = (p: Pointer, l: TouchListener[]) => {
   let result = false;
   const listeners = [...l];
-  while (result == false) {
+  while (listeners.length && result == false) {
     const next = listeners.shift();
     result = next && next(p);
   }
@@ -37,35 +37,95 @@ export default class MultitouchInput {
       this.onTouchStart.bind(this),
       this.onDownListeners
     );
+    this.registerEvent(
+      "mousemove",
+      this.onMouseMove.bind(this),
+      this.onMoveListeners
+    );
+    this.registerEvent(
+      "touchmove",
+      this.onTouchMove.bind(this),
+      this.onMoveListeners
+    );
+    this.registerEvent(
+      "mouseup",
+      this.onMouseUp.bind(this),
+      this.onUpListeners
+    );
+    this.registerEvent(
+      "touchend",
+      this.onTouchEnd.bind(this),
+      this.onUpListeners
+    );
   }
-  onMouseDown(event: MouseEvent): Pointer {
+  onMouseDown(event: MouseEvent): Pointer[] {
     const pointer = (this.pointers[0] =
-      this.pointers[0] || new Pointer("mouse"));
+      this.pointers[0] || new Pointer("mouse", -1));
     pointer.type = "mouse";
     pointer.position.set(event.offsetX, event.offsetY);
     pointer.movement.set(event.movementX, event.movementY);
     pointer.isDown = true;
-    return pointer;
+    return [pointer];
   }
-  onTouchStart(event: TouchEvent): Pointer {
-    let p: Pointer;
+  onTouchStart(event: TouchEvent): Pointer[] {
+    let pointers: Pointer[] = [];
     Array.from(event.changedTouches).forEach((t, i) => {
       const pointer = (this.pointers[t.identifier] =
-        this.pointers[t.identifier] || new Pointer("mouse"));
-      p = i == 0 ? pointer : p;
+        this.pointers[t.identifier] || new Pointer("touch", t.identifier));
+      //p = i == 0 ? pointer : p;
       pointer.update(t);
       pointer.isDown = true;
+      pointers.push(pointer);
     });
-    return p;
+    return pointers;
+  }
+  onMouseMove(event: MouseEvent): Pointer[] {
+    const pointer = (this.pointers[0] =
+      this.pointers[0] || new Pointer("mouse", -1));
+    pointer.type = "mouse";
+    pointer.position.set(event.offsetX, event.offsetY);
+    pointer.movement.set(event.movementX, event.movementY);
+    return [pointer];
+  }
+  onTouchMove(event: TouchEvent): Pointer[] {
+    let pointers: Pointer[] = [];
+    Array.from(event.changedTouches).forEach((t, i) => {
+      const pointer = (this.pointers[t.identifier] =
+        this.pointers[t.identifier] || new Pointer("touch", t.identifier));
+      pointer.update(t);
+      pointers.push(pointer);
+    });
+    return pointers;
+  }
+  onMouseUp(event: MouseEvent): Pointer[] {
+    const pointer = (this.pointers[0] =
+      this.pointers[0] || new Pointer("mouse", -1));
+    pointer.type = "mouse";
+    pointer.position.set(event.offsetX, event.offsetY);
+    pointer.movement.set(event.movementX, event.movementY);
+    pointer.isDown = false;
+    return [pointer];
+  }
+  onTouchEnd(event: TouchEvent): Pointer[] {
+    let pointers: Pointer[] = [];
+    Array.from(event.changedTouches).forEach((t, i) => {
+      const pointer = (this.pointers[t.identifier] =
+        this.pointers[t.identifier] || new Pointer("touch", t.identifier));
+      //p = i == 0 ? pointer : p;
+      pointer.update(t);
+      pointer.isDown = false;
+      pointers.push(pointer);
+    });
+    return pointers;
   }
   registerEvent<E extends keyof HTMLElementEventMap>(
     eventName: E,
-    handler: (event: HTMLElementEventMap[E]) => Pointer,
+    handler: (event: HTMLElementEventMap[E]) => Pointer[],
     listeners: TouchListener[]
   ) {
     this.renderer.domElement.addEventListener(eventName, (e) => {
       e.preventDefault();
-      return emitPointer(handler(e), listeners);
+      handler(e).forEach((p) => emitPointer(p, listeners));
     });
   }
   getIntersections(
@@ -95,5 +155,5 @@ export class Pointer {
     this.position.x = t.clientX;
     this.position.y = t.clientY;
   }
-  constructor(public type: "mouse" | "touch") {}
+  constructor(public type: "mouse" | "touch", public identifier: number) {}
 }
