@@ -20,10 +20,8 @@ export default function (data: {
   openPresetButton.id = "createPresetButton";
 
 
-  //Mostra la ui di default se parametro "ui-show" è settato
-  if(window.queryParams['ui-show']) {
-    container.classList.remove("hidden");
-  } else {
+  //NAsconde la ui di default se parametro "ui-show" non è settato
+  if(!window.queryParams['ui-show']) {
     container.classList.add("hidden");
   }
   
