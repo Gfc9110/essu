@@ -8,7 +8,7 @@ export default function (data: {
     step?: string;
   };
 }) {
-  const container = document.querySelector("#controlli-bloom");
+  const container = document.querySelector("#controlli");
   const out = {};
   // @ts-ignore
   const params = { scene: window.queryParams.scene };
@@ -19,11 +19,29 @@ export default function (data: {
   openPresetButton.target = "_blank";
   openPresetButton.id = "createPresetButton";
 
+
+
+  container.classList.add("hidden");
+  
+  document.addEventListener("keydown", function(e) {
+    
+    var keyCode = e.code;
+    
+    if(keyCode == "KeyK"){
+      
+      container.classList.toggle("hidden");
+
+    }
+
+  });
+  /*
   //Nasconde ui se parametro "ui-hide" è settato
   if(window.queryParams['ui-hide']) {
     container.style.display = "none";
   }
+  */
   
+
   function updateButton() {
     const parameters = new URLSearchParams();
     Object.keys(params).forEach((key) => {
