@@ -20,8 +20,12 @@ export default function (data: {
   openPresetButton.id = "createPresetButton";
 
 
-
-  container.classList.add("hidden");
+  //Mostra la ui di default se parametro "ui-show" è settato
+  if(window.queryParams['ui-show']) {
+    container.classList.remove = "hidden";
+  } else {
+    container.classList.add("hidden");
+  }
   
   document.addEventListener("keydown", function(e) {
     
@@ -34,12 +38,9 @@ export default function (data: {
     }
 
   });
-  /*
-  //Nasconde ui se parametro "ui-hide" è settato
-  if(window.queryParams['ui-hide']) {
-    container.style.display = "none";
-  }
-  */
+  
+  
+  
   
 
   function updateButton() {
