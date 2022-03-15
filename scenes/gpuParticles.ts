@@ -26,6 +26,7 @@ import vertexShader from "../utils/shaders/gpuParticles/vertexShader.glsl?raw";
 // @ts-ignore
 import fragmentShader from "../utils/shaders/gpuParticles/fragmentShader.glsl?raw";
 import Stats from "../utils/stats";
+import controlsUi from "../utils/controls-ui";
 
 export default function (renderer: WebGLRenderer) {
   const scene = new Scene();
@@ -35,9 +36,20 @@ export default function (renderer: WebGLRenderer) {
   camera.far = 21;
   camera.near = 1;
 
+  const controls: any = controlsUi({
+    sqParticleCount: {
+      label: "Radice Quantità Particelle",
+      type: "range",
+      min: "1.0",
+      max: "1024",
+      step: "1",
+      startValue: "1024"
+    },
+  });
+
   const stats = Stats();
   document.body.appendChild(stats.dom);
-  const sqrtParticleCount = 1024;
+  const sqrtParticleCount = controls.sqParticleCount;
 
   const gpuCompute = new GPUComputationRenderer(sqrtParticleCount, sqrtParticleCount, renderer);
 
