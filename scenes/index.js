@@ -9,4 +9,5 @@ export default {
   "scrolling-terrain": async (r) => (await import("./scrolling-terrain")).default(r),
   particles: async (r) => (await import("./particles")).default(r),
   gpuParticles: async (r) => (await import("./gpuParticles")).default(r),
+  gameOfLife: async (r) => (await import("./gameOfLife")).default(r),
 };
