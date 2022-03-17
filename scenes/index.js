@@ -10,4 +10,5 @@ export default {
   particles: async (r) => (await import("./particles")).default(r),
   gpuParticles: async (r) => (await import("./gpuParticles")).default(r),
   gameOfLife: async (r) => (await import("./gameOfLife")).default(r),
+  mandelbrot: async (r) => (await import("./mandelbrot")).default(r),
 };
