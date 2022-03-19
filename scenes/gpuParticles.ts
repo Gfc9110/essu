@@ -3,14 +3,11 @@ import {
   BufferGeometry,
   Color,
   Float32BufferAttribute,
-  Mesh,
   OrthographicCamera,
   Points,
-  PointsMaterial,
   Scene,
   ShaderMaterial,
   TextureLoader,
-  Vector2,
   Vector4,
   WebGLRenderer,
 } from "three";
@@ -61,20 +58,23 @@ export default function (renderer: WebGLRenderer) {
 
   const computeTexture = gpuCompute.createTexture();
 
-  const uv: number[] = [];
-
   const spacingX = 300;
   const spacingY = 300;
+  const offsetX = spacingX / (controls.sqCount + 1);
+  const offsetY = spacingY / (controls.sqCount + 1);
 
-  for (let i = 0; i < computeTexture.image.data.length; i += 4) {
-    //uv.push(1, 1);
-    let x = (Math.floor(i / 4) % controls.sqCount) / controls.sqCount;
-    let y = Math.floor(i / 4 / controls.sqCount) / controls.sqCount;
-    uv.push(x, y);
-    computeTexture.image.data[i] = -(spacingX / 2) + y * spacingX; //posX
-    computeTexture.image.data[i + 1] = -(spacingY / 2) + x * spacingY; //posY
-    computeTexture.image.data[i + 2] = 0; //velX
-    computeTexture.image.data[i + 3] = 0; //velY
+  const references: number[] = [];
+  for (let x = 0; x < controls.sqCount; x++) {
+    for (let y = 0; y < controls.sqCount; y++) {
+      let u = x / controls.sqCount;
+      let v = y / controls.sqCount;
+      references.push(u, v);
+      const pI = (y * controls.sqCount + x) * 4;
+      computeTexture.image.data[pI] = x * offsetX - spacingX / 2;
+      computeTexture.image.data[pI + 1] = y * offsetY - spacingY / 2;
+      computeTexture.image.data[pI + 2] = 0;
+      computeTexture.image.data[pI + 3] = 0;
+    }
   }
 
   const pointsGeometry = new BufferGeometry();
@@ -82,15 +82,8 @@ export default function (renderer: WebGLRenderer) {
   for (let i = 0; i < sqrtParticleCount * sqrtParticleCount; i++) {
     positions.push(0, 0, 0);
   }
-  const references: number[] = [];
-  for (let x = 0; x < sqrtParticleCount; x++) {
-    for (let y = 0; y < sqrtParticleCount; y++) {
-      references.push(x / sqrtParticleCount, y / sqrtParticleCount);
-    }
-  }
   pointsGeometry.setAttribute("position", new Float32BufferAttribute(positions, 3));
   pointsGeometry.setAttribute("reference", new Float32BufferAttribute(references, 2));
-  pointsGeometry.setAttribute("pUv", new Float32BufferAttribute(uv, 2));
 
   const points = new Points(
     pointsGeometry,
