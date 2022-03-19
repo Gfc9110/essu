@@ -33,6 +33,7 @@ import controlsUi from "../utils/controls-ui";
 
 // @ts-ignore
 import image from "../assets/images/gpuParticles/resilience.jpg";
+import noise from "../utils/samplers/noise";
 
 export default function (renderer: WebGLRenderer) {
   const scene = new Scene();
@@ -63,12 +64,12 @@ export default function (renderer: WebGLRenderer) {
 
   const computeTexture = gpuCompute.createTexture();
 
-  const spacingX = 300;
-  const spacingY = 300;
+  const spacingX = 600;
+  const spacingY = 600;
   const offsetX = spacingX / (controls.sqCount + 1);
   const offsetY = spacingY / (controls.sqCount + 1);
 
-  const windTextureResolution = 1024;
+  const windTextureResolution = 256;
 
   const windTexture = new DataTexture(
     new Float32Array(windTextureResolution * windTextureResolution * 4),
@@ -88,8 +89,8 @@ export default function (renderer: WebGLRenderer) {
     direction.y =
       Math.sign((x - windTextureResolution / 2) * (y - windTextureResolution / 2)) *
         Math.sign(y - windTextureResolution / 2) || -1;
-    windTexture.image.data[i] = direction.x * 0.03;
-    windTexture.image.data[i + 1] = direction.y * 0.03;
+    windTexture.image.data[i] = noise.sample({ x, y }, 100, 0.1);
+    windTexture.image.data[i + 1] = noise.sample({ x: x + 500, y: y + 500 }, 100, 0.1);
     windTexture.image.data[i + 2] = 1;
     windTexture.image.data[i + 3] = 1;
   }
@@ -168,6 +169,27 @@ export default function (renderer: WebGLRenderer) {
         touch.pointers[0].isDown ? -touch.pointers[0].movement.y : 0
       );
     }
+    for (let i = 0; i < windTextureResolution * windTextureResolution * 4; i += 4) {
+      const x = (i / 4) % windTextureResolution;
+      const y = i / 4 / windTextureResolution;
+      const direction = new Vector2(0, 0);
+      direction.x =
+        -Math.sign((x - windTextureResolution / 2) * (y - windTextureResolution / 2)) *
+          Math.sign(x - windTextureResolution / 2) || -Math.sign(y - windTextureResolution / 2);
+      direction.y =
+        Math.sign((x - windTextureResolution / 2) * (y - windTextureResolution / 2)) *
+          Math.sign(y - windTextureResolution / 2) || -1;
+      windTexture.image.data[i] = noise.sample({ x, y, z: time / 100 }, 100, 0.1);
+      windTexture.image.data[i + 1] = noise.sample(
+        { x: x + 500, y: y + 500, z: time / 100 },
+        100,
+        0.1
+      );
+      windTexture.image.data[i + 2] = 1;
+      windTexture.image.data[i + 3] = 1;
+    }
+
+    windTexture.needsUpdate = true;
     gpuCompute.compute();
     points.material.uniforms.texturePosVel.value =
       gpuCompute.getCurrentRenderTarget("texturePosVel").texture;

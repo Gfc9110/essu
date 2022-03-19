@@ -9,6 +9,6 @@ void main() {
   vec4 data = texture2D(texturePosVel, reference);
   //particleReference = reference;
   particleUv = reference;
-  gl_PointSize = 3.0;
+  gl_PointSize = 2.0;
   gl_Position = projectionMatrix * viewMatrix * vec4(data.x, data.y, 1.0, 1.0);
 }
