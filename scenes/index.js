@@ -12,4 +12,5 @@ export default {
   gameOfLife: async (r) => (await import("./gameOfLife")).default(r),
   mandelbrot: async (r) => (await import("./mandelbrot")).default(r),
   windParticles: async (r) => (await import("./windParticles")).default(r),
+  refraction: async (r) => (await import("./refraction")).default(r),
 };
