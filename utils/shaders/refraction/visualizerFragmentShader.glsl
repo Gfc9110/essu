@@ -32,6 +32,8 @@ void main() {
     }
   }
 
+  //outColor = smoothstep(150.0001, 150.0, length(vec3(mapFragX(gl_FragCoord.x), mapFragY(gl_FragCoord.y), 0.0))) * 0.1;
+
   //outColor += 1.0 - abs(evaluateFunction(mapFragX(gl_FragCoord.x), functions[0]) - pY);
   gl_FragColor = vec4(vec3(outColor), 1);
 }

@@ -1,19 +1,25 @@
 import {
+  AddEquation,
   AdditiveBlending,
   AmbientLight,
   BufferGeometry,
   Color,
+  CustomBlending,
+  DstAlphaFactor,
   Float32BufferAttribute,
   Matrix3,
   Matrix4,
   Mesh,
   MeshBasicMaterial,
   MultiplyBlending,
+  OneFactor,
+  OneMinusSrcAlphaFactor,
   OrthographicCamera,
   PlaneGeometry,
   Points,
   Scene,
   ShaderMaterial,
+  SrcAlphaFactor,
   Uniform,
   Vector2,
   Vector4,
@@ -69,14 +75,14 @@ export default function (renderer: WebGLRenderer) {
 
   const computeTexture = gpuCompute.createTexture();
 
-  const center = new Vector2(0, -300);
+  const center = new Vector2(-600, 25);
 
-  const spacingX = 200;
-  const spacingY = 10;
+  const spacingX = 1000;
+  const spacingY = 5;
   const offsetX = spacingX / (controls.sqCount + 1);
   const offsetY = spacingY / (controls.sqCount + 1);
 
-  const functions = [new Vector4(100, 1, 0, 0), new Vector4(300, 1, 0, 1)];
+  const functions = [new Vector4(100, 1.6, 0, 1), new Vector4(100, -1.6, 0, 1), new Vector4(-100,0,0,0)];
 
   const functionsCount = functions.length;
   for (let i = functions.length; i < 10; i++) {
@@ -98,7 +104,7 @@ export default function (renderer: WebGLRenderer) {
       computeTexture.image.data[pI] = x * offsetX - spacingX / 2 + center.x;
       computeTexture.image.data[pI + 1] = y * offsetY - spacingY / 2 + center.y;
       const r = Math.random();
-      computeTexture.image.data[pI + 2] = 4.25;
+      computeTexture.image.data[pI + 2] = 6.0;
       //console.log((computeTexture.image.data[pI + 2] % 1) * Math.PI * 2);
       computeTexture.image.data[pI + 3] = r;
     }
@@ -122,7 +128,10 @@ export default function (renderer: WebGLRenderer) {
       vertexShader,
       fragmentShader,
       transparent: true,
-      blending: AdditiveBlending,
+      blending: CustomBlending,
+      blendEquation: AddEquation,
+      blendSrc: SrcAlphaFactor,
+      blendDst: DstAlphaFactor,
     })
   );
 
