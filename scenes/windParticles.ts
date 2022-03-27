@@ -5,6 +5,7 @@ import {
   DataTexture,
   Float32BufferAttribute,
   FloatType,
+  NearestFilter,
   OrthographicCamera,
   Points,
   RGBAFormat,
@@ -12,6 +13,7 @@ import {
   Scene,
   ShaderMaterial,
   TextureLoader,
+  Uniform,
   Vector2,
   Vector4,
   WebGLRenderer,
@@ -36,6 +38,10 @@ import image from "../assets/images/gpuParticles/resilience.jpg";
 import noise from "../utils/samplers/noise";
 
 export default function (renderer: WebGLRenderer) {
+
+  //renderer.getRenderTarget().minFilter = NearestFilter
+  (document.querySelector("#overlay") as HTMLDivElement).style.display = "block";
+  renderer.setPixelRatio(0.1);
   const scene = new Scene();
   scene.background = new Color("black");
   const camera = new OrthographicCamera();
@@ -71,7 +77,7 @@ export default function (renderer: WebGLRenderer) {
 
   const windTextureResolution = 256;
 
-  const windTexture = new DataTexture(
+  /*const windTexture = new DataTexture(
     new Float32Array(windTextureResolution * windTextureResolution * 4),
     windTextureResolution,
     windTextureResolution,
@@ -95,7 +101,7 @@ export default function (renderer: WebGLRenderer) {
     windTexture.image.data[i + 3] = 1;
   }
 
-  windTexture.needsUpdate = true;
+  windTexture.needsUpdate = true;*/
 
   const references: number[] = [];
   for (let x = 0; x < controls.sqCount; x++) {
@@ -139,7 +145,8 @@ export default function (renderer: WebGLRenderer) {
   computeVariable.material.uniforms.maxX = { value: document.body.clientWidth / 2 };
   computeVariable.material.uniforms.minY = { value: -document.body.clientHeight / 2 };
   computeVariable.material.uniforms.maxY = { value: document.body.clientHeight / 2 };
-  computeVariable.material.uniforms.windTexture = { value: windTexture };
+  //computeVariable.material.uniforms.windTexture = { value: windTexture };
+  computeVariable.material.uniforms.time = new Uniform(0);
 
   gpuCompute.setVariableDependencies("texturePosVel", ["texturePosVel"]);
 
@@ -148,6 +155,7 @@ export default function (renderer: WebGLRenderer) {
   gpuCompute.compute();
 
   points.material.uniforms.FIRST.value = false;
+  points.material.uniforms.time = new Uniform(0);
 
   const touch = new MultitouchInput(renderer);
 
@@ -169,7 +177,9 @@ export default function (renderer: WebGLRenderer) {
         touch.pointers[0].isDown ? -touch.pointers[0].movement.y : 0
       );
     }
-    for (let i = 0; i < windTextureResolution * windTextureResolution * 4; i += 4) {
+    computeVariable.material.uniforms.time.value = time;
+    points.material.uniforms.time.value = time;
+    /*for (let i = 0; i < windTextureResolution * windTextureResolution * 4; i += 4) {
       const x = (i / 4) % windTextureResolution;
       const y = i / 4 / windTextureResolution;
       const direction = new Vector2(0, 0);
@@ -187,9 +197,9 @@ export default function (renderer: WebGLRenderer) {
       );
       windTexture.image.data[i + 2] = 1;
       windTexture.image.data[i + 3] = 1;
-    }
+    }*/
 
-    windTexture.needsUpdate = true;
+    //windTexture.needsUpdate = true;
     gpuCompute.compute();
     points.material.uniforms.texturePosVel.value =
       gpuCompute.getCurrentRenderTarget("texturePosVel").texture;
