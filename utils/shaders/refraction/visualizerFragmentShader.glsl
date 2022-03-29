@@ -4,6 +4,8 @@ uniform float height;
 uniform int functionsCount;
 
 uniform vec4 shapePoints[100];
+uniform vec2 lightStart;
+uniform vec2 lightEnd;
 
 float evaluateFunction(float x, vec4 func) {
   float value = func.x + x * func.y + pow(x, 2.0) * func.z;
@@ -37,7 +39,7 @@ float mapFragY(float y) {
 
 void main() {
   float baseColor = 0.05;
-  float outColor = 0.1;
+  vec3 outColor = vec3(0.1,0.1,0.1);
   float pY = mapFragY(gl_FragCoord.y);
 
   for(int i = 0; i < functionsCount; i++) {
@@ -47,12 +49,18 @@ void main() {
       offset = -offset;
     }
     if(offset < 0.0) {
-      outColor = 0.0;
+      outColor = vec3(0,0,0);;
     }
+  }
+
+  if(length(vec2(mapFragX(gl_FragCoord.x), mapFragY(gl_FragCoord.y)) - lightStart) < 8.0) {
+    outColor = vec3(0,1,0);
+  } else if (length(vec2(mapFragX(gl_FragCoord.x), mapFragY(gl_FragCoord.y)) - lightEnd) < 8.0) {
+    outColor = vec3(1,0,0);
   }
 
   //outColor = smoothstep(150.0001, 150.0, length(vec3(mapFragX(gl_FragCoord.x), mapFragY(gl_FragCoord.y), 0.0))) * 0.1;
 
   //outColor += 1.0 - abs(evaluateFunction(mapFragX(gl_FragCoord.x), functions[0]) - pY);
-  gl_FragColor = vec4(vec3(outColor), 1);
+  gl_FragColor = vec4(outColor, 1);
 }

@@ -39,6 +39,10 @@ vec3 spectral_zucconi6(float w) {
 
 void main() {
   float wavelength = texture2D(texturePosVel, particleUv.xy).w;
-  gl_FragColor = vec4(spectral_zucconi6(minWave + wavelength * (maxWave - minWave)), 0.02);
+  vec3 color = spectral_zucconi6(minWave + wavelength * (maxWave - minWave));
+  if(wavelength < 0.0) {
+    color = vec3(0,0,0);
+  }
+  gl_FragColor = vec4(color, 0.6);
   //gl_FragColor = functions[0];
 }

@@ -41,6 +41,7 @@ import fragmentShader from "../utils/shaders/refraction/fragmentShader.glsl?raw"
 
 // @ts-ignore
 import visualizerFragmentShader from "../utils/shaders/refraction/visualizerFragmentShader.glsl?raw";
+import MultitouchInput, { Pointer } from "../utils/input/multitouch";
 
 // array di funzioni che definiscono forma , dati: ax^0 + bx^1 + cx^2, inverted?
 // rifrazione ai confini delle particelle
@@ -48,6 +49,8 @@ import visualizerFragmentShader from "../utils/shaders/refraction/visualizerFrag
 // use shader function "refract"
 
 export default function (renderer: WebGLRenderer) {
+  let lightStartPoint = new Vector2(0, 0);
+  let lightEndPoint = new Vector2(100, 0);
   const scene = new Scene();
   scene.background = new Color("black");
   const camera = new OrthographicCamera();
@@ -74,6 +77,8 @@ export default function (renderer: WebGLRenderer) {
   const gpuCompute = new GPUComputationRenderer(sqrtParticleCount, sqrtParticleCount, renderer);
 
   const computeTexture = gpuCompute.createTexture();
+
+  const input = new MultitouchInput(renderer);
 
   const center = new Vector2(-600, 25);
 
@@ -123,7 +128,7 @@ export default function (renderer: WebGLRenderer) {
       const r = Math.random();
       computeTexture.image.data[pI + 2] = 6.0;
       //console.log((computeTexture.image.data[pI + 2] % 1) * Math.PI * 2);
-      computeTexture.image.data[pI + 3] = 1 - r;
+      computeTexture.image.data[pI + 3] = -1;
     }
   }
 
@@ -158,11 +163,15 @@ export default function (renderer: WebGLRenderer) {
 
   computeVariable.material.uniforms.functions = new Uniform(functions);
   computeVariable.material.uniforms.functionsCount = new Uniform(functionsCount);
+  computeVariable.material.uniforms.lightStart = new Uniform(lightStartPoint);
+  computeVariable.material.uniforms.lightEnd = new Uniform(lightEndPoint);
 
   functionsVisualizer.material.uniforms.functions = new Uniform(functions);
   functionsVisualizer.material.uniforms.width = new Uniform(document.body.clientWidth);
   functionsVisualizer.material.uniforms.height = new Uniform(document.body.clientHeight);
   functionsVisualizer.material.uniforms.functionsCount = new Uniform(functionsCount);
+  functionsVisualizer.material.uniforms.lightStart = new Uniform(lightStartPoint);
+  functionsVisualizer.material.uniforms.lightEnd = new Uniform(lightEndPoint);
 
   gpuCompute.setVariableDependencies("texturePosVel", ["texturePosVel"]);
 
@@ -176,6 +185,28 @@ export default function (renderer: WebGLRenderer) {
   points.material.uniforms.FIRST.value = false;
 
   scene.add(new AmbientLight("white", 1), points, functionsVisualizer);
+
+  const mouseScale = new Vector2(1, -1);
+
+  function screenToWorld(pos: Vector2) {
+    return new Vector2(
+      pos.x - document.body.clientWidth / 2,
+      -(pos.y - document.body.clientHeight / 2)
+    );
+  }
+
+  input.onMoveListeners.push((p) => {
+    if (p.isDown) {
+      //console.log(screenToWorld(p.position));
+      let startDistance = lightStartPoint.clone().sub(screenToWorld(p.position)).lengthSq();
+      let endDistance = lightEndPoint.clone().sub(screenToWorld(p.position)).lengthSq();
+      startDistance <= endDistance
+        ? lightStartPoint.add(p.movement.multiply(mouseScale))
+        : lightEndPoint.add(p.movement.multiply(mouseScale));
+      return true;
+    }
+    return false;
+  });
 
   function update(deltaTime: number, time: number) {
     if (resizeRendererToDisplaySize(renderer)) {
