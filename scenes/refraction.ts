@@ -77,16 +77,33 @@ export default function (renderer: WebGLRenderer) {
 
   const center = new Vector2(-600, 25);
 
-  const spacingX = 1000;
-  const spacingY = 5;
+  const shapes: Vector4[][] = [];
+  shapes.push([new Vector4(0, 50), new Vector4(-60, -50), new Vector4(60, -50)]);
+
+  const spacingX = 900;
+  const spacingY = 15;
   const offsetX = spacingX / (controls.sqCount + 1);
   const offsetY = spacingY / (controls.sqCount + 1);
 
-  const functions = [new Vector4(100, 1.6, 0, 1), new Vector4(100, -1.6, 0, 1), new Vector4(-100,0,0,0)];
+  const functions = [
+    new Vector4(100, 1.6, 0, 1),
+    new Vector4(100, -1.6, 0, 1),
+    new Vector4(-100, 0, 0, 0),
+  ];
 
   const functionsCount = functions.length;
   for (let i = functions.length; i < 10; i++) {
     functions.push(new Vector4());
+  }
+
+  const shapePoints = shapes.reduce((prev, current, index) => {
+    prev.push(...current, new Vector4(0, 0, 0, 0));
+    return prev;
+  }, []);
+
+  const shapePointsLength = shapePoints.length;
+  for (let i = shapePointsLength; i < 100; i++) {
+    shapePoints.push(new Vector4(0, 0, 0, 0));
   }
 
   const functionsVisualizer = new Mesh(
@@ -106,7 +123,7 @@ export default function (renderer: WebGLRenderer) {
       const r = Math.random();
       computeTexture.image.data[pI + 2] = 6.0;
       //console.log((computeTexture.image.data[pI + 2] % 1) * Math.PI * 2);
-      computeTexture.image.data[pI + 3] = r;
+      computeTexture.image.data[pI + 3] = 1 - r;
     }
   }
 

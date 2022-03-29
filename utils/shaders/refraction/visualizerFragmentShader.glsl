@@ -3,9 +3,28 @@ uniform float width;
 uniform float height;
 uniform int functionsCount;
 
+uniform vec4 shapePoints[100];
+
 float evaluateFunction(float x, vec4 func) {
   float value = func.x + x * func.y + pow(x, 2.0) * func.z;
   return value;
+}
+
+bool isInsideShape(vec2 position, int shapeStart, int shapeEnd) {
+  float minY = 50000.0;
+  float maxY = -50000.0;
+  for(int i = shapeStart; i < shapeEnd; i++) {
+    if(shapePoints[i].y < minY) {
+      minY = shapePoints[i].y;
+    }
+    if(shapePoints[i].y > maxY) {
+      maxY = shapePoints[i].y;
+    }
+  }
+  if(position.y < minY || position.y > maxY ) {
+    return false;
+  }
+
 }
 
 float mapFragX(float x) {
