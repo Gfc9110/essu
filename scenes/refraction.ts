@@ -83,7 +83,9 @@ export default function (renderer: WebGLRenderer) {
   const center = new Vector2(-600, 25);
 
   const shapes: Vector4[][] = [];
-  shapes.push([new Vector4(0, 50), new Vector4(-60, -50), new Vector4(60, -50)]);
+  //shapes.push([new Vector4(-200, 100, 0, 1), new Vector4(200, 100, 0, 1), new Vector4(0, 200, 0, 1)]);
+  //shapes.push([new Vector4(200, -100, 0, 1), new Vector4(-200, -100, 0, 1), new Vector4(0, -200, 0, 1)]);
+  //shapes.push([new Vector4(300, -350, 0, 1), new Vector4(240, -250, 0, 1), new Vector4(360, -250, 0, 1)]);
 
   const spacingX = 900;
   const spacingY = 15;
@@ -110,6 +112,8 @@ export default function (renderer: WebGLRenderer) {
   for (let i = shapePointsLength; i < 100; i++) {
     shapePoints.push(new Vector4(0, 0, 0, 0));
   }
+
+  console.log(shapePoints);
 
   const functionsVisualizer = new Mesh(
     new PlaneGeometry(document.body.clientWidth, document.body.clientHeight),
@@ -172,6 +176,7 @@ export default function (renderer: WebGLRenderer) {
   functionsVisualizer.material.uniforms.functionsCount = new Uniform(functionsCount);
   functionsVisualizer.material.uniforms.lightStart = new Uniform(lightStartPoint);
   functionsVisualizer.material.uniforms.lightEnd = new Uniform(lightEndPoint);
+  functionsVisualizer.material.uniforms.shapePoints = new Uniform(shapePoints);
 
   gpuCompute.setVariableDependencies("texturePosVel", ["texturePosVel"]);
 
