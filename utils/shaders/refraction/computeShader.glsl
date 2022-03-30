@@ -113,7 +113,7 @@ void main() {
   float rawDirection = fract(movement);
   float directionAngle = rawDirection * PI * 2.0;
   float speed = floor(movement);
-  vec2 velocity = vec2(cos(directionAngle), sin(directionAngle)) * (speed / 20.0);
+  vec2 velocity = vec2(cos(directionAngle), sin(directionAngle)) * (speed / 5.0);
   if(hash21(position) > 0.997) {
     position = lightStart + hash22(position) * 4.0 - 2.0;
     data.w = hash21(uv / 100.0);
