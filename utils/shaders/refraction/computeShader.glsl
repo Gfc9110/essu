@@ -2,8 +2,6 @@ float minWave = 400.0;
 float maxWave = 700.0;
 #define PI 3.1415926538
 #define baseIOR 1.3
-uniform vec4 functions[10];
-uniform int functionsCount;
 uniform vec2 lightStart;
 uniform vec2 lightEnd;
 #define HASHSCALE3 vec3(.1031, .1030, .0973)
@@ -80,7 +78,7 @@ vec2 isInsideShape(vec2 position, vec2 velocity, int shapeStart, int shapeEnd) {
     }
   }
   if(position.y < minY || position.y > maxY || position.x < minX || position.x > maxX) {
-    return vec2(0,0);
+    return vec2(0, 0);
   }
   //int sideCount = shapeEnd - shapeStart + 1;
   vec2 outside = vec2(maxX + 10.0, maxY + 10.0);
@@ -138,17 +136,6 @@ vec2 isInsideShape(vec2 position, vec2 velocity, int shapeStart, int shapeEnd) {
   //return intersectCount % 2 == 1;
 }
 
-float evaluateFunction(float x, vec4 func) {
-  //x = -x;
-  float value = func.x + x * func.y + pow(x, 2.0) * func.z;
-  return value;
-}
-
-float evaluateDerivative(float x, vec4 func) {
-  //x = -x;
-  return (func.y + x * func.z * 2.0);
-}
-
 vec3 isPointInsideShape(vec2 pos, vec2 vel) {
   int inside = 0;
 
@@ -170,18 +157,6 @@ vec3 isPointInsideShape(vec2 pos, vec2 vel) {
       startShape = i + 1;
     }
   }
-  /*
-  bool inside = true;
-  for(int i = 0; i < functionsCount; i++) {
-    float functionValue = evaluateFunction(pos.x, functions[i]);
-    float offset = pos.y - functionValue;
-    if(functions[i].w > 0.5) {
-      offset = -offset;
-    }
-    if(offset < 0.0) {
-      inside = false;
-    }
-  }*/
   return vec3(normal, inside);
 }
 
@@ -202,57 +177,10 @@ vec3 particleShapeInteraction(vec2 pos, vec2 vel) {
   return vec3(willBeInsideN.xy, 1);
 }
 
-vec4 getNearestFunction2(vec2 particlePosition) {
-  float particleX = particlePosition.x;
-  float particleY = particlePosition.y;
-  float dist = -1.0;
-  vec4 nearest;
-  for(int i = 0; i < functionsCount; i++) {
-    vec4 f = functions[i];
-    float functionY = evaluateFunction(particleX, f);
-    float distY = abs(functionY - particleY);
-    if(i == 0 || distY < dist) {
-      nearest = f;
-      dist = distY;
-    }
-  }
-  return nearest;
-}
-
-vec4 getNearestFunction(vec2 pos) {
-  vec4 nearest;
-  float dist = -1.0;
-  for(int i = 0; i < functionsCount; i++) {
-    float functionValue = evaluateFunction(pos.x, functions[i]);
-    //float offset = pos.y - functionValue;
-    float fDist = abs(pos.y - functionValue);
-    if(dist < -0.5 || fDist < dist) {
-      dist = fDist;
-      nearest = functions[i];
-    }
-  }
-  return nearest;
-}
-
 vec2 hash22(vec2 p) {
   vec3 p3 = fract(vec3(p.xyx) * HASHSCALE3);
   p3 += dot(p3, p3.yzx + 19.19);
   return fract((p3.xx + p3.yz) * p3.zy);
-}
-
-vec2 evaluateNormal(vec4 function, float inputX) {
-  float slope = evaluateDerivative(inputX, function);
-  /*if(function.w > 0.5) {
-    slope = -slope;
-  }*/
-  float angle = atan(slope);
-  if(function.w > 0.5) {
-    angle += PI / 2.0;
-  } else {
-    angle -= PI / 2.0;
-  }
-  return normalize(vec2(-1, 1));
-  return vec2(cos(angle), sin(angle));
 }
 
 float hash21(vec2 co) {
@@ -273,65 +201,24 @@ void main() {
     data.w = hash21(uv / 100.0);
     float angle = atan(lightEnd.y - position.y, lightEnd.x - position.x);
     rawDirection = angle / (PI * 2.0);
-    //rawDirection = hash21(uv) * 0.01 - 0.005;
   } else if(data.w >= 0.0) {
 
     vec3 interaction = particleShapeInteraction(position, velocity);
     if(interaction.z > 0.5) {
-      vec4 nearest = getNearestFunction2(position);
-      //float slope = evaluateDerivative(position.x, nearest);
-      //float angle = atan(slope);
-      //angle += PI / 2.0;
-      /*if(nearest.w > 0.5) {
-        angle  = -angle;
-      }*/
-      //} else {
-      //angle += PI / 2.0;
-      //}
-      //angle += PI / 2.0;
-      //vec2 normal = vec2(-cos(angle), sin(angle));
       vec2 normal = normalize(interaction.xy * vec2(1, 1));
-      //normal = normalize(vec2(-1.2, 1));
-      /*if(nearest.w > 0.5) {
-        normal = -normal;
-      }*/
       vec2 direction = normalize(velocity * vec2(1, 1));
       float colorVariation = (data.w - 0.5) * 0.47;
       vec2 newDirection = refract(direction, normal, 1.0 / baseIOR + colorVariation);
-      //newDirection = reflect(direction, normal);
       float newAngle = atan(newDirection.y, newDirection.x);
       rawDirection = newAngle / (PI * 2.0);
     } else if(interaction.z < -0.5) {
-      vec4 nearest = getNearestFunction2(position);
-      //float slope = evaluateDerivative(position.x, nearest);
-      //float angle = atan(slope);
-      //angle += PI / 2.0;
-      /*if(nearest.w > 0.5) {
-        angle  = -angle;
-      }*/
-      //} else {
-      //angle += PI / 2.0;
-      //}
-      //angle += PI / 2.0;
-      //vec2 normal = vec2(-cos(angle), sin(angle));
       vec2 normal = -normalize(interaction.xy);
-      //normal = normalize(vec2(0, 1));
-      /*if(nearest.w > 0.5) {
-        normal = -normal;
-      }*/
       vec2 direction = normalize(velocity * vec2(1, 1));
       float colorVariation = (data.w - 0.5) * 0.47;
       vec2 newDirection = refract(direction, normal, baseIOR + colorVariation);
-      //newDirection = reflect(direction, normal);
       float newAngle = atan(newDirection.y, newDirection.x);
       rawDirection = newAngle / (PI * 2.0);
     }
   }
-  //float wavelength = data.w;
-  /*if(isPointInsideShape(position)) {
-    speed = 8.0;
-  } else {
-    speed = 4.0;
-  }*/
   gl_FragColor = vec4(position + velocity, speed + fract(rawDirection), data.w);
 }

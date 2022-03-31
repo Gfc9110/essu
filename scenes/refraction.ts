@@ -98,17 +98,6 @@ export default function (renderer: WebGLRenderer) {
   const offsetX = spacingX / (controls.sqCount + 1);
   const offsetY = spacingY / (controls.sqCount + 1);
 
-  const functions = [
-    /*new Vector4(100, 1.6, 0, 1),
-    new Vector4(100, -1.6, 0, 1),
-    new Vector4(-100, 0, 0, 0),*/
-  ];
-
-  const functionsCount = functions.length;
-  for (let i = functions.length; i < 10; i++) {
-    functions.push(new Vector4());
-  }
-
   const shapePoints = shapes.reduce((prev, current, index) => {
     prev.push(...current, new Vector4(0, 0, 0, 0));
     return prev;
@@ -168,17 +157,12 @@ export default function (renderer: WebGLRenderer) {
   //points.material.uniforms.functions = new Uniform(functions);
 
   const computeVariable = gpuCompute.addVariable("texturePosVel", computeShader, computeTexture);
-
-  computeVariable.material.uniforms.functions = new Uniform(functions);
-  computeVariable.material.uniforms.functionsCount = new Uniform(functionsCount);
   computeVariable.material.uniforms.lightStart = new Uniform(lightStartPoint);
   computeVariable.material.uniforms.lightEnd = new Uniform(lightEndPoint);
   computeVariable.material.uniforms.shapePoints = new Uniform(shapePoints);
-
-  functionsVisualizer.material.uniforms.functions = new Uniform(functions);
+  
   functionsVisualizer.material.uniforms.width = new Uniform(document.body.clientWidth);
   functionsVisualizer.material.uniforms.height = new Uniform(document.body.clientHeight);
-  functionsVisualizer.material.uniforms.functionsCount = new Uniform(functionsCount);
   functionsVisualizer.material.uniforms.lightStart = new Uniform(lightStartPoint);
   functionsVisualizer.material.uniforms.lightEnd = new Uniform(lightEndPoint);
   functionsVisualizer.material.uniforms.shapePoints = new Uniform(shapePoints);
