@@ -109,10 +109,10 @@ float mapFragY(float y) {
 
 void main() {
   float baseColor = 0.05;
-  vec3 outColor = vec3(0.1, 0.1, 0.1);
+  vec3 outColor = vec3(0, 0, 0);
   float pY = mapFragY(gl_FragCoord.y);
 
-  for(int i = 0; i < functionsCount; i++) {
+  /*for(int i = 0; i < functionsCount; i++) {
     float functionValue = evaluateFunction(mapFragX(gl_FragCoord.x), functions[i]);
     float offset = pY - functionValue;
     if(functions[i].w > 0.5) {
@@ -121,7 +121,7 @@ void main() {
     if(offset < 0.0) {
       outColor = vec3(0, 0, 0);;
     }
-  }
+  }*/
 
   vec2 worldPosition = vec2(mapFragX(gl_FragCoord.x), mapFragY(gl_FragCoord.y));
 
@@ -132,10 +132,10 @@ void main() {
     if(shapePoints[i].w == 0.0) {
       endShape = i - 1;
       if(isInsideShape(worldPosition, startShape, endShape)) {
-        outColor = vec3(0, 0, 1);
+        outColor = vec3(0.1, 0.1, 0.1);
       }
       if(i == 99 || shapePoints[i + 1].w == 0.0) {
-        i = 99;
+        i = 100;
       }
       startShape = i + 1;
     }

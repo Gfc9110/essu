@@ -49,8 +49,8 @@ import MultitouchInput, { Pointer } from "../utils/input/multitouch";
 // use shader function "refract"
 
 export default function (renderer: WebGLRenderer) {
-  let lightStartPoint = new Vector2(0, 0);
-  let lightEndPoint = new Vector2(100, 0);
+  let lightStartPoint = new Vector2(-100, 0);
+  let lightEndPoint = new Vector2(0, -100);
   const scene = new Scene();
   scene.background = new Color("black");
   const camera = new OrthographicCamera();
@@ -83,11 +83,13 @@ export default function (renderer: WebGLRenderer) {
   const center = new Vector2(-600, 25);
 
   const shapes: Vector4[][] = [];
-  /*shapes.push([
-    new Vector4(0, 280, 0, 1),
-    new Vector4(50, 200, 0, 1),
-    new Vector4(-50, 200, 0, 1),
-  ]);*/
+  shapes.push([    
+    //new Vector4(-50, 150, 0, 1),
+    new Vector4(0, 80, 0, 1),
+    //new Vector4(50, 150, 0, 1),
+    new Vector4(100, -80, 0, 1),
+    new Vector4(-100, -80, 0, 1),
+  ]);
   //shapes.push([new Vector4(200, -100, 0, 1), new Vector4(-200, -100, 0, 1), new Vector4(0, -200, 0, 1)]);
   //shapes.push([new Vector4(300, -350, 0, 1), new Vector4(240, -250, 0, 1), new Vector4(360, -250, 0, 1)]);
 
@@ -97,9 +99,9 @@ export default function (renderer: WebGLRenderer) {
   const offsetY = spacingY / (controls.sqCount + 1);
 
   const functions = [
-    new Vector4(100, 1.6, 0, 1),
+    /*new Vector4(100, 1.6, 0, 1),
     new Vector4(100, -1.6, 0, 1),
-    new Vector4(-100, 0, 0, 0),
+    new Vector4(-100, 0, 0, 0),*/
   ];
 
   const functionsCount = functions.length;
@@ -116,8 +118,6 @@ export default function (renderer: WebGLRenderer) {
   for (let i = shapePointsLength; i < 100; i++) {
     shapePoints.push(new Vector4(0, 0, 0, 0));
   }
-
-  console.log(shapePoints);
 
   const functionsVisualizer = new Mesh(
     new PlaneGeometry(document.body.clientWidth, document.body.clientHeight),
@@ -173,6 +173,7 @@ export default function (renderer: WebGLRenderer) {
   computeVariable.material.uniforms.functionsCount = new Uniform(functionsCount);
   computeVariable.material.uniforms.lightStart = new Uniform(lightStartPoint);
   computeVariable.material.uniforms.lightEnd = new Uniform(lightEndPoint);
+  computeVariable.material.uniforms.shapePoints = new Uniform(shapePoints);
 
   functionsVisualizer.material.uniforms.functions = new Uniform(functions);
   functionsVisualizer.material.uniforms.width = new Uniform(document.body.clientWidth);
