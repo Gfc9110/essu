@@ -85,10 +85,17 @@ export default function (renderer: WebGLRenderer) {
   const shapes: Vector4[][] = [];
   shapes.push([    
     //new Vector4(-50, 150, 0, 1),
-    new Vector4(0, 80, 0, 1),
+    new Vector4(-200, 80, 0, 1),
     //new Vector4(50, 150, 0, 1),
-    new Vector4(100, -80, 0, 1),
     new Vector4(-100, -80, 0, 1),
+    new Vector4(-300, -80, 0, 1),
+
+    new Vector4(0,0,0,0),
+
+    new Vector4(200, 100, 0, 1),
+    new Vector4(300, 0, 0, 1),
+    new Vector4(200, -100, 0, 1),
+    new Vector4(100, 0, 0, 1),
   ]);
   //shapes.push([new Vector4(200, -100, 0, 1), new Vector4(-200, -100, 0, 1), new Vector4(0, -200, 0, 1)]);
   //shapes.push([new Vector4(300, -350, 0, 1), new Vector4(240, -250, 0, 1), new Vector4(360, -250, 0, 1)]);
