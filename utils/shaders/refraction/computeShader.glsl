@@ -195,7 +195,7 @@ void main() {
   float rawDirection = fract(movement);
   float directionAngle = rawDirection * PI * 2.0;
   float speed = floor(movement);
-  vec2 velocity = vec2(cos(directionAngle), sin(directionAngle)) * (speed / 5.0);
+  vec2 velocity = vec2(cos(directionAngle), sin(directionAngle)) * (speed / 3.0);
   if(hash21(position) > 0.997) {
     position = lightStart + hash22(position) * 4.0 - 2.0;
     data.w = hash21(uv / 100.0);
@@ -207,18 +207,30 @@ void main() {
     if(interaction.z > 0.5) {
       vec2 normal = normalize(interaction.xy * vec2(1, 1));
       vec2 direction = normalize(velocity * vec2(1, 1));
+      float ccos = dot(normal, -direction);
       float colorVariation = (data.w - 0.5) * 0.47;
-      vec2 newDirection = refract(direction, normal, 1.0 / baseIOR + colorVariation);
+      vec2 newDirection = vec2(0, 0);
+      //if(hash21(uv / 70.0) > ccos) {
+        newDirection = refract(direction, normal, 1.0 / (baseIOR + colorVariation));
+      //} else {
+      //  newDirection = reflect(direction, normal);
+      //}
       float newAngle = atan(newDirection.y, newDirection.x);
       rawDirection = newAngle / (PI * 2.0);
     } else if(interaction.z < -0.5) {
       vec2 normal = -normalize(interaction.xy);
       vec2 direction = normalize(velocity * vec2(1, 1));
+      float ccos = dot(normal, -direction);
       float colorVariation = (data.w - 0.5) * 0.47;
-      vec2 newDirection = refract(direction, normal, baseIOR + colorVariation);
+      vec2 newDirection = vec2(0, 0);
+      //if(hash21(uv / 70.0) > ccos) {
+        newDirection = refract(direction, normal, baseIOR + colorVariation);
+      //} else {
+      //  newDirection = reflect(direction, normal);
+      //}
       float newAngle = atan(newDirection.y, newDirection.x);
       rawDirection = newAngle / (PI * 2.0);
     }
   }
-  gl_FragColor = vec4(position + velocity, speed + fract(rawDirection), data.w);
+  gl_FragColor = vec4(position + velocity, speed + min(fract(rawDirection), 0.999), data.w);
 }

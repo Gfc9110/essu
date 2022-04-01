@@ -43,6 +43,8 @@ import fragmentShader from "../utils/shaders/refraction/fragmentShader.glsl?raw"
 import visualizerFragmentShader from "../utils/shaders/refraction/visualizerFragmentShader.glsl?raw";
 import MultitouchInput, { Pointer } from "../utils/input/multitouch";
 
+const au = 1.618033;
+
 // array di funzioni che definiscono forma , dati: ax^0 + bx^1 + cx^2, inverted?
 // rifrazione ai confini delle particelle
 // dati particelle: posX, posY, fract -> angle | floor = speed, wavelength
@@ -83,19 +85,41 @@ export default function (renderer: WebGLRenderer) {
   const center = new Vector2(-600, 25);
 
   const shapes: Vector4[][] = [];
-  shapes.push([    
+
+  const cos45 = Math.cos(Math.PI / 2);
+  const sin45 = Math.sin(Math.PI / 2);
+
+  function rotateVector(vec: Vector4, angle: number): Vector4 {
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    return new Vector4(cos * vec.x - sin * vec.y, sin * vec.x + cos * vec.y, vec.z, vec.w);
+  }
+
+  shapes.push([
+    rotateVector(new Vector4(0, 0.1, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(200, 0, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(200, -80, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(80, -80, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(80, -200 * au, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(0, -200 * au, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(0, -0.1, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(-200, 0, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(-200, 80, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(-80, 80, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(-80, 200 * au, 0, 1), Math.PI / 4),
+    rotateVector(new Vector4(0, 200 * au, 0, 1), Math.PI / 4),
     //new Vector4(-50, 150, 0, 1),
-    new Vector4(-200, 80, 0, 1),
+    //new Vector4(-200, 80, 0, 1),
     //new Vector4(50, 150, 0, 1),
-    new Vector4(-100, -80, 0, 1),
-    new Vector4(-300, -80, 0, 1),
+    //new Vector4(-100, -80, 0, 1),
+    //new Vector4(-300, -80, 0, 1),
 
-    new Vector4(0,0,0,0),
+    //new Vector4(0,0,0,0),
 
-    new Vector4(200, 100, 0, 1),
-    new Vector4(300, 0, 0, 1),
-    new Vector4(200, -100, 0, 1),
-    new Vector4(100, 0, 0, 1),
+    //new Vector4(200, 100, 0, 1),
+    //new Vector4(300, 0, 0, 1),
+    //new Vector4(200, -100, 0, 1),
+    //new Vector4(100, 0, 0, 1),
   ]);
   //shapes.push([new Vector4(200, -100, 0, 1), new Vector4(-200, -100, 0, 1), new Vector4(0, -200, 0, 1)]);
   //shapes.push([new Vector4(300, -350, 0, 1), new Vector4(240, -250, 0, 1), new Vector4(360, -250, 0, 1)]);
@@ -167,7 +191,7 @@ export default function (renderer: WebGLRenderer) {
   computeVariable.material.uniforms.lightStart = new Uniform(lightStartPoint);
   computeVariable.material.uniforms.lightEnd = new Uniform(lightEndPoint);
   computeVariable.material.uniforms.shapePoints = new Uniform(shapePoints);
-  
+
   functionsVisualizer.material.uniforms.width = new Uniform(document.body.clientWidth);
   functionsVisualizer.material.uniforms.height = new Uniform(document.body.clientHeight);
   functionsVisualizer.material.uniforms.lightStart = new Uniform(lightStartPoint);

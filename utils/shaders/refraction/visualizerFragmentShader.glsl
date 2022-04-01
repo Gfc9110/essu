@@ -112,7 +112,7 @@ void main() {
     if(shapePoints[i].w == 0.0) {
       endShape = i - 1;
       if(isInsideShape(worldPosition, startShape, endShape)) {
-        outColor = vec3(0.1, 0.1, 0.1);
+        outColor = vec3(0.15, 0.15, 0.15);
       }
       if(i == 99 || shapePoints[i + 1].w == 0.0) {
         i = 100;
