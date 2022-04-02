@@ -67,8 +67,21 @@ export default function (renderer: WebGLRenderer) {
       min: "1.0",
       max: "4096",
       step: "1",
-      startValue: "1024",
+      startValue: "256",
     },
+    shapeColor: { 
+      label: "Colore Forma",
+      type: "color",
+      startValue: "#222222"
+    },
+    internalReflection: {
+      label: "Riflessione Interna Totale",
+      type: "range",
+      min: "0.0",
+      max: "1.0",
+      step: "1",
+      startValue: "0"
+    }
   });
 
   const stats = Stats();
@@ -191,12 +204,14 @@ export default function (renderer: WebGLRenderer) {
   computeVariable.material.uniforms.lightStart = new Uniform(lightStartPoint);
   computeVariable.material.uniforms.lightEnd = new Uniform(lightEndPoint);
   computeVariable.material.uniforms.shapePoints = new Uniform(shapePoints);
+  computeVariable.material.uniforms.internalReflection = new Uniform(controls.internalReflection);
 
   functionsVisualizer.material.uniforms.width = new Uniform(document.body.clientWidth);
   functionsVisualizer.material.uniforms.height = new Uniform(document.body.clientHeight);
   functionsVisualizer.material.uniforms.lightStart = new Uniform(lightStartPoint);
   functionsVisualizer.material.uniforms.lightEnd = new Uniform(lightEndPoint);
   functionsVisualizer.material.uniforms.shapePoints = new Uniform(shapePoints);
+  functionsVisualizer.material.uniforms.shapeColor = new Uniform(new Color(controls.shapeColor));
 
   gpuCompute.setVariableDependencies("texturePosVel", ["texturePosVel"]);
 
@@ -241,6 +256,8 @@ export default function (renderer: WebGLRenderer) {
         document.body.clientHeight
       );
     }
+    functionsVisualizer.material.uniforms.shapeColor.value.set(controls.shapeColor);
+    computeVariable.material.uniforms.internalReflection.value = controls.internalReflection;
     gpuCompute.compute();
     points.material.uniforms.texturePosVel.value =
       gpuCompute.getCurrentRenderTarget("texturePosVel").texture;

@@ -4,6 +4,7 @@ float maxWave = 700.0;
 #define baseIOR 1.3
 uniform vec2 lightStart;
 uniform vec2 lightEnd;
+uniform float internalReflection;
 #define HASHSCALE3 vec3(.1031, .1030, .0973)
 
 uniform vec4 shapePoints[100];
@@ -224,7 +225,11 @@ void main() {
       float colorVariation = (data.w - 0.5) * 0.47;
       vec2 newDirection = vec2(0, 0);
       //if(hash21(uv / 70.0) > ccos) {
+      if(internalReflection > 0.5) {
+        newDirection = reflect(direction, normal);
+      } else {
         newDirection = refract(direction, normal, baseIOR + colorVariation);
+      }
       //} else {
       //  newDirection = reflect(direction, normal);
       //}

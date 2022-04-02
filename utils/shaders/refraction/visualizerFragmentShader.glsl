@@ -4,6 +4,7 @@ uniform float height;
 uniform vec4 shapePoints[100];
 uniform vec2 lightStart;
 uniform vec2 lightEnd;
+uniform vec3 shapeColor;
 
 int orientation(vec2 p, vec2 q, vec2 r) {
   float val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
@@ -112,7 +113,7 @@ void main() {
     if(shapePoints[i].w == 0.0) {
       endShape = i - 1;
       if(isInsideShape(worldPosition, startShape, endShape)) {
-        outColor = vec3(0.15, 0.15, 0.15);
+        outColor = shapeColor;
       }
       if(i == 99 || shapePoints[i + 1].w == 0.0) {
         i = 100;
