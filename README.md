@@ -1,6 +1,6 @@
 <img src="/assets/images/readme/essu-logo2.svg" alt="drawing" width="350" height="120"/>
 
-# <pre<Project ESSU <br> <small> _(Experimental Scripted Soothing Uollpeipers)_ </small>
+# <pre>Project ESSU <br> <small> _(Experimental Scripted Soothing Uollpeipers)_ </small>
 </pre>
 ## Sand Color Particles
 <img src="/assets/images/readme/gpuParticles.png" alt="drawing" width="200"/>
