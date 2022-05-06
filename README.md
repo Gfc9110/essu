@@ -1,4 +1,4 @@
-<img src="/assets/images/readme/essu-logo2.svg" alt="drawing" width="350" height="150"/>
+<img src="/assets/images/readme/essu-logo2.svg" alt="drawing" width="350" height="120"/>
 
 # _(Experimental Scripted Soothing Uollpeipers)_
 
@@ -7,17 +7,15 @@
 <img src="/assets/images/readme/gpuParticles.png" alt="drawing" width="200"/>
 
 
-- [Sand Color Particles](https://drs-wallpapers.netlify.app/?scene=gpuParticles&sqCount=600)
-
-
-
+<a href="https://drs-wallpapers.netlify.app/?scene=gpuParticles&sqCount=600" target="_blank">Sand Color Particles</a>
 
 ---
 ## Bloom
+<a href="https://drs-wallpapers.netlify.app/?scene=bloom" target="_blank">Bloom</a>
 
-- [Bloom](https://drs-wallpapers.netlify.app/?scene=bloom)
 ---
 ## Game Of life
 
-- [Game Of Life](https://drs-wallpapers.netlify.app/?scene=gameOfLife)
+<a href="https://drs-wallpapers.netlify.app/?scene=gameOfLife" target="_blank">Game Of Life</a>
 
+---
