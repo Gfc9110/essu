@@ -50,7 +50,8 @@ export default class MultitouchInput {
     this.registerEvent(
       "mouseup",
       this.onMouseUp.bind(this),
-      this.onUpListeners
+      this.onUpListeners,
+      window
     );
     this.registerEvent(
       "touchend",
@@ -125,10 +126,12 @@ export default class MultitouchInput {
   registerEvent<E extends keyof HTMLElementEventMap>(
     eventName: E,
     handler: (event: HTMLElementEventMap[E]) => Pointer[],
-    listeners: TouchListener[]
+    listeners: TouchListener[],
+    element?: HTMLElement | Window
   ) {
-    this.renderer.domElement.addEventListener(eventName, (e) => {
+    (element || this.renderer.domElement).addEventListener(eventName, (e) => {
       e.preventDefault();
+      // @ts-ignore
       handler(e).forEach((p) => emitPointer(p, listeners));
     });
   }

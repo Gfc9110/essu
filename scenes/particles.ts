@@ -1,4 +1,3 @@
-import { throws } from "assert";
 import {
   AmbientLight,
   BufferGeometry,
@@ -14,16 +13,15 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import GPUComputationRenderer from "../lib/GPUComputationRenderer";
 import MultitouchInput from "../utils/input/multitouch";
 import { generateCircle } from "../utils/meshes/primitives";
-import {
-  resizeRendererToDisplaySize,
-  fixPersp,
-  fixOrtho,
-} from "../utils/responsiveCamera";
+import { resizeRendererToDisplaySize, fixPersp, fixOrtho } from "../utils/responsiveCamera";
 import randomOnCircle from "../utils/vector/randomOnCircle";
 
 export default function (renderer: WebGLRenderer) {
+  let g1 = new GPUComputationRenderer(1, 1, renderer);
+
   document.title = " - DRS Wallpaper";
   renderer.autoClear = false;
   renderer.setClearColor("black");
@@ -45,10 +43,8 @@ export default function (renderer: WebGLRenderer) {
     particles.push(
       new Particle({
         position: new Vector2(
-          Math.random() * document.body.clientWidth -
-            0.5 * document.body.clientWidth,
-          Math.random() * document.body.clientHeight -
-            0.5 * document.body.clientHeight
+          Math.random() * document.body.clientWidth - 0.5 * document.body.clientWidth,
+          Math.random() * document.body.clientHeight - 0.5 * document.body.clientHeight
         ),
         velocity: randomOnCircle(1 + Math.random() * 0.1).multiplyScalar(0.001),
         color: "white",
@@ -70,12 +66,7 @@ export default function (renderer: WebGLRenderer) {
     if (touch.pointers[0]) {
       const worldPosition = touch.pointers[0].position
         .clone()
-        .add(
-          new Vector2(
-            -document.body.clientWidth / 2,
-            -document.body.clientHeight / 2
-          )
-        )
+        .add(new Vector2(-document.body.clientWidth / 2, -document.body.clientHeight / 2))
         .multiply(new Vector2(1, -1));
       particles.forEach((p) => p.update(deltaTime, time, worldPosition));
     } else {
@@ -89,10 +80,7 @@ export default function (renderer: WebGLRenderer) {
 }
 
 const pointGeometry = new BufferGeometry();
-pointGeometry.setAttribute(
-  "position",
-  new Float32BufferAttribute([0, 0, 0], 3)
-);
+pointGeometry.setAttribute("position", new Float32BufferAttribute([0, 0, 0], 3));
 
 interface ParticleOptions {
   position?: Vector2;
@@ -116,22 +104,15 @@ class Particle extends Points {
     this.velocity = velocity?.clone() || new Vector2();
   }
   update(deltaTime: number, time: number, mousPos?: Vector2) {
-    this.velocity.rotateAround(
-      new Vector2(0, 0),
-      (Math.random() - 0.5) * (Math.PI / 32)
-    );
+    this.velocity.rotateAround(new Vector2(0, 0), (Math.random() - 0.5) * (Math.PI / 32));
     /*this.velocity.multiplyScalar(1 + (Math.random() - 0.5) * 0.01);*/
     if (mousPos) {
-      const offset = mousPos
-        .clone()
-        .sub(new Vector2(this.position.x, this.position.y));
+      const offset = mousPos.clone().sub(new Vector2(this.position.x, this.position.y));
       let sqrDistance = offset.lengthSq() / 100;
       sqrDistance = Math.max(0.1, sqrDistance);
       //console.log(mousPos, this.position);
       this.velocity.add(
-        offset
-          .normalize()
-          .multiplyScalar((deltaTime * deltaTime * 0.0005) / sqrDistance)
+        offset.normalize().multiplyScalar((deltaTime * deltaTime * 0.0005) / sqrDistance)
       );
       this.velocity.clampLength(0, 0.5);
     }

@@ -6,7 +6,11 @@ export default {
   circles: async (r) => (await import("./circles")).default(r),
   "hud-test": async (r) => (await import("./hud-test")).default(r),
   bloom: async (r) => (await import("./bloom")).default(r),
-  "scrolling-terrain": async (r) =>
-    (await import("./scrolling-terrain")).default(r),
+  "scrolling-terrain": async (r) => (await import("./scrolling-terrain")).default(r),
   particles: async (r) => (await import("./particles")).default(r),
+  gpuParticles: async (r) => (await import("./gpuParticles")).default(r),
+  gameOfLife: async (r) => (await import("./gameOfLife")).default(r),
+  mandelbrot: async (r) => (await import("./mandelbrot")).default(r),
+  windParticles: async (r) => (await import("./windParticles")).default(r),
+  refraction: async (r) => (await import("./refraction")).default(r),
 };
