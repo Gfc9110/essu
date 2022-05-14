@@ -19,6 +19,8 @@
 ---
 ## Refraction
 
-<a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&sqCount=256" target="_blank">Game Of Life</a>
+- <a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&sqCount=256" target="_blank">Refraction</a>
+È anche presente una versione in cui la rifrazione è simulata solo all'interno della forma
+- <a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&shapeColor=%23000000&internalReflection=1" target="_blank">Inner Refraction</a>
 
-https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&shapeColor=%23000000&internalReflection=1
+
