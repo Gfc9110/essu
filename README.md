@@ -22,5 +22,6 @@
 - <a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&sqCount=256" target="_blank">Refraction</a>
 - <a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=refraction&shapeColor=%23000000&internalReflection=1" target="_blank">Inner Refraction</a> in questa versione la rifrazione è simulata solo all'interno della forma
 
+---
 ## Wind Particles
 - <a href="https://deploy-preview-7--drs-wallpapers.netlify.app/?scene=windParticles" target="_blank">Wind Particles</a>
