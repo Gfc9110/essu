@@ -1,13 +1,15 @@
 <img src="/assets/images/readme/essu-logo2.svg" alt="drawing" width="350" height="120"/>
 
 # Project ESSU <br> <small> _(Experimental Stylish Scripted Uollpeipers)_ </small>
-<i>essu</i><br>
-/es·su/<br>
-<i>esclamazione di stupore tipica sarda</i>
-<br>
+<div style="padding-left: .6em; border-left: solid 1px #aaa;">
+  <i>essu</i><br>
+  /es·su/<br>
+  <i>esclamazione di stupore tipica sarda</i>
+  <br>
+</div>
 
 <p>
-  Nei prossimi link troverai degli sfondi animati realizzati tramite la libreria JavaScript Three.JS.<br>
+  Nei prossimi link troverai degli sfondi animati realizzati tramite la libreria JavaScript <a href="https://github.com/Gfc9110/essu">Three.JS</a>.<br>
   (Gli script utilizzano pesantemente le risorse di calcolo del tuo dispositivo, potresti notare rallentamenti nelle prestazioni.
 </p>
 
