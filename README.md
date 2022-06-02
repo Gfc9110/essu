@@ -9,7 +9,7 @@
 </div>
 
 <p>
-  Nei prossimi link troverai degli sfondi animati realizzati tramite la libreria JavaScript <a href="https://github.com/Gfc9110/essu">Three.JS</a>.<br>
+  Nei prossimi link troverai degli sfondi animati realizzati tramite la libreria JavaScript <a href="https://github.com/mrdoob/three.js">Three.js</a>.<br>
   (Gli script utilizzano pesantemente le risorse di calcolo del tuo dispositivo, potresti notare rallentamenti nelle prestazioni.
 </p>
 
