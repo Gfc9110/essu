@@ -21,7 +21,7 @@
 
 ---
 ## Bloom
-- <a href="https://drs-wallpapers.netlify.app/?scene=bloom" target="_blank">Bloom</a>
+- <a href="https://drs-wallpapers.netlify.app/?scene=bloom&ui-show=true" target="_blank">Bloom</a>
 
 ---
 ## Game Of life
