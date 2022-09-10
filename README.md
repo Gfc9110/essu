@@ -9,8 +9,9 @@
 </blockquote>
 
 <p>
-  Project ESSU mira a realizzare opere grafiche appaganti genrate proceduralmente in base all'interattività dell'utente.
-  Nei prossimi link troverai degli sfondi animati realizzati tramite la libreria JavaScript <a href="https://github.com/mrdoob/three.js">Three.js</a>.<br>
+  Project ESSU mira a realizzare degli sfondi animati generati proceduralmente in base all'interattività dell'utente.
+  <br><br>
+  Nei prossimi link troverai una selezione di sfondi in fase di test, realizzati tramite la libreria JavaScript <a href="https://github.com/mrdoob/three.js">Three.js</a>.<br>
   (Gli script utilizzano pesantemente le risorse di calcolo del tuo dispositivo, potresti notare rallentamenti nelle prestazioni.
 </p>
 
