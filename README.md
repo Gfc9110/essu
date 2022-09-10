@@ -2,7 +2,7 @@
 
 # Project ESSU <br> <small> _(E<small>xperimental</small> S<small>tylish</small> S<small>cripted</small> U<small>ollpeipers</small>)_ </small>
 <blockquote>
-  <i>essu</i><br>
+  <strong>essu</strong><br>
   /es·su/<br>
   <i>esclamazione di stupore tipica sarda</i>
   <br>
