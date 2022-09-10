@@ -4,7 +4,8 @@
 <blockquote>
   <strong>essu</strong><br>
   /es·su/<br>
-  <i>esclamazione di stupore tipica sarda</i>
+  <i>esclamazione di stupore tipica sarda</i><br>
+  <q><i>Essu! Bello questo sfondo cazz!</i></q>
   <br>
 </blockquote>
 
