@@ -1,4 +1,4 @@
-<img src="/assets/images/readme/essu-logo2.svg" alt="drawing" width="350" height="120"/>
+<img src="/assets/images/readme/essu-logo3.svg" alt="drawing" width="350" height="120"/>
 
 # Project ESSU <br> <small> _(Experimental Stylish Scripted Uollpeipers)_ </small>
 <div style="padding-left: .6em; border-left: solid 1px #aaa;">
