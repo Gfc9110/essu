@@ -1,6 +1,6 @@
 <img src="/assets/images/readme/essu-logo3.svg" alt="drawing" width="350" height="120"/>
 
-# Project ESSU <br> <small> _(Experimental Stylish Scripted Uollpeipers)_ </small>
+# Project ESSU <br> <small> _(E<small>xperimental</small> S<small>tylish</small> S<small>cripted</small> U<small>ollpeipers</small>)_ </small>
 <div style="padding-left: .6em; border-left: solid 1px #aaa;">
   <i>essu</i><br>
   /es·su/<br>
